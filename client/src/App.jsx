@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="max-w-7xl mx-auto"> {/* Replace Container with div and apply Tailwind classes */}
+      <div className="max-w-7xl mx-auto px-5 lg:py-8"> {/* Replace Container with div and apply Tailwind classes */}
         <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/posts" replace />} />
