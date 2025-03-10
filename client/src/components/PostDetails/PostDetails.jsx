@@ -31,8 +31,10 @@ const Post = () => {
 
   if (isLoading) {
     return (
-      <div className="rounded-lg shadow-md p-6 flex justify-center"> {/* Replace Paper with div and add Tailwind classes */}
-        <CircularProgress size="7em" />
+      <div className="rounded-lg shadow-md p-6 flex justify-center">
+        <div
+          className="w-28 h-28 border-4 border-gray-200 rounded-full border-t-blue-500 animate-spin"
+        />
       </div>
     );
   }

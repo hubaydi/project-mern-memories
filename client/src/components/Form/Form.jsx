@@ -65,19 +65,14 @@ const Form = ({ currentId, setCurrentId }) => {
         <h6 className="text-lg font-bold mb-4">{currentId ? `Editing "${post?.title}"` : 'Creating a Memory'}</h6> {/* Replace Typography with h6 and add Tailwind classes */}
         <input /* Replace TextField with input and add Tailwind classes */
           name="title"
-          variant="outlined"
           label="Title"
-          fullWidth
           className="w-full border rounded py-2 px-3 mb-4"
           value={postData.title}
           onChange={(e) => setPostData({ ...postData, title: e.target.value })}
         />
         <textarea /* Replace TextField with textarea and add Tailwind classes */
           name="message"
-          variant="outlined"
           label="Message"
-          fullWidth
-          multiline
           rows={4}
           className="w-full border rounded py-2 px-3 mb-4"
           value={postData.message}
@@ -90,7 +85,7 @@ const Form = ({ currentId, setCurrentId }) => {
             type="text"
             placeholder="Tags"
             className="w-full border rounded py-2 px-3"
-            onKeyPress={(e) => {
+            onKeyUp={(e) => {
               if (e.key === 'Enter') {
                 handleAddChip(e.target.value);
                 e.target.value = '';

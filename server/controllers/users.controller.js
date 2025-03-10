@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-import UserModal from "../models/user.js";
+import UserModal from "../models/user.model.js";
 
 // Load environment variables
 dotenv.config();

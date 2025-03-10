@@ -60,7 +60,13 @@ const Post = ({ post, setCurrentId }) => {
 
   return (
     <div className="max-w-sm rounded overflow-hidden shadow-lg">
-      <button type="button" className="block h-48 w-full" onClick={openPost}>
+      <div 
+        role="button"
+        tabIndex="0"
+        className="block h-48 w-full relative cursor-pointer" 
+        onClick={openPost}
+        onKeyDown={(e) => e.key === 'Enter' && openPost()}
+      >
         <img
           className="w-full h-full object-cover"
           src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
@@ -90,7 +96,7 @@ const Post = ({ post, setCurrentId }) => {
             {post.message.split(' ').splice(0, 20).join(' ')}...
           </p>
         </div>
-      </button>
+      </div>
       <div className="px-6 pt-4 pb-2">
         <button
           type="button"
