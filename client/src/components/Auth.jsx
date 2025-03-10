@@ -5,8 +5,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { jwtDecode } from 'jwt-decode';
 
 import Icon from './icon';
-import { signin, signup } from '../../actions/auth';
-import { AUTH } from '../../constants/actionTypes';
+import { signin, signup } from '../actions/auth';
+import { AUTH } from '../constants/actionTypes';
 // import useStyles from './styles'; // Remove useStyles
 import Input from './Input';
 

@@ -2,11 +2,11 @@ import React from 'react';
 // import { Container } from '@mui/material'; // Remove MUI import
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import PostDetails from './components/PostDetails/PostDetails';
-import Navbar from './components/Navbar/Navbar';
-import Home from './components/Home/Home';
-import Auth from './components/Auth/Auth';
-import CreatorOrTag from './components/CreatorOrTag/CreatorOrTag';
+import PostDetails from './components/PostDetails';
+import Navbar from './components/Navbar';
+import Home from './components/Home';
+import Auth from './components/Auth';
+import CreatorOrTag from './components/CreatorOrTag';
 
 const App = () => {
   const user = JSON.parse(localStorage.getItem('profile'));

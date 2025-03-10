@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { getPostsBySearch } from '../../actions/posts';
-import Posts from '../Posts/Posts';
-import Form from '../Form/Form';
-import Pagination from '../Pagination';
+import { getPostsBySearch } from '../actions/posts';
+import Posts from './Posts/Posts';
+import Form from './Form';
+import Pagination from './Pagination';
 // import useStyles from './styles'; // Remove useStyles
 
 function useQuery() {
