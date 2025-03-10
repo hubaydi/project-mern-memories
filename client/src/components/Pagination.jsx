@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Pagination, PaginationItem } from '@material-ui/lab';
+import { Pagination, PaginationItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import { getPosts } from '../actions/posts';
@@ -11,7 +11,7 @@ const Paginate = ({ page }) => {
   const { numberOfPages } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
 
-  const classes = useStyles();
+  const styles = useStyles();
 
   useEffect(() => {
     if (page) {
@@ -21,7 +21,7 @@ const Paginate = ({ page }) => {
 
   return (
     <Pagination
-      classes={{ ul: classes.ul }}
+      sx={{ ul: styles().ul }}
       count={numberOfPages}
       page={Number(page) || 1}
       variant="outlined"

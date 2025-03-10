@@ -1,6 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 
-export default makeStyles({
+// Create a theme-aware style object
+const styles = () => ({
   media: {
     height: 0,
     paddingTop: '56.25%',
@@ -54,3 +55,10 @@ export default makeStyles({
     textAlign: 'initial',
   },
 });
+
+// Custom hook to use the styles
+const useStyles = () => {
+  return styles;
+};
+
+export default useStyles;

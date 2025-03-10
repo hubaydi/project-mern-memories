@@ -1,6 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 
-export default makeStyles((theme) => ({
+// Create a theme-aware style object
+const styles = (theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -27,4 +28,11 @@ export default makeStyles((theme) => ({
   googleButton: {
     marginBottom: theme.spacing(2),
   },
-}));
+});
+
+// Custom hook to use the styles
+const useStyles = () => {
+  return styles;
+};
+
+export default useStyles;

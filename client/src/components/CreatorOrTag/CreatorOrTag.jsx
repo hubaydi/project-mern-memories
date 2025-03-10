@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { Typography, CircularProgress, Grid, Divider } from '@material-ui/core';
+import { Typography, CircularProgress, Grid, Divider, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Post from '../Posts/Post/Post';
@@ -24,9 +24,9 @@ const CreatorOrTag = () => {
   if (!posts.length && !isLoading) return 'No posts';
 
   return (
-    <div>
+    <Box>
       <Typography variant="h2">{name}</Typography>
-      <Divider style={{ margin: '20px 0 50px 0' }} />
+      <Divider sx={{ margin: '20px 0 50px 0' }} />
       {isLoading ? <CircularProgress /> : (
         <Grid container alignItems="stretch" spacing={3}>
           {posts?.map((post) => (
@@ -36,7 +36,7 @@ const CreatorOrTag = () => {
           ))}
         </Grid>
       )}
-    </div>
+    </Box>
   );
 };
 

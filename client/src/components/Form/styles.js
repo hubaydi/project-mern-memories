@@ -1,7 +1,7 @@
+import { styled } from '@mui/material/styles';
 
-import { makeStyles } from '@material-ui/core/styles';
-
-export default makeStyles((theme) => ({
+// Create a theme-aware style object
+const styles = (theme) => ({
   root: {
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
@@ -22,4 +22,11 @@ export default makeStyles((theme) => ({
   buttonSubmit: {
     marginBottom: 10,
   },
-}));
+});
+
+// Custom hook to use the styles
+const useStyles = () => {
+  return styles;
+};
+
+export default useStyles;

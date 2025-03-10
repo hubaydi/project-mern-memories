@@ -1,7 +1,8 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { deepPurple } from '@material-ui/core/colors';
+import { styled } from '@mui/material/styles';
+import { deepPurple } from '@mui/material/colors';
 
-export default makeStyles((theme) => ({
+// Create a theme-aware style object
+const styles = (theme) => ({
   mainContainer: {
     borderRadius: 15,
     margin: '30px 0',
@@ -43,7 +44,15 @@ export default makeStyles((theme) => ({
     color: theme.palette.getContrastText(deepPurple[500]),
     backgroundColor: deepPurple[500],
   },
-  [theme.breakpoints.down('sm')]: {
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  actionDiv: {
+    textAlign: 'center',
+  },
+  // Media queries
+  ...(theme.breakpoints.down('sm') && {
     appBar: {
       padding: '10px 20px',
     },
@@ -61,9 +70,12 @@ export default makeStyles((theme) => ({
       justifyContent: 'flex-end',
       width: '160px',
     },
-  },
+  }),
+});
 
-  actionDiv: {
-    textAlign: 'center',
-  },
-}));
+// Custom hook to use the styles
+const useStyles = () => {
+  return styles;
+};
+
+export default useStyles;

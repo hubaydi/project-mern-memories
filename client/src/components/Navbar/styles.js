@@ -1,7 +1,8 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { deepPurple } from '@material-ui/core/colors';
+import { styled } from '@mui/material/styles';
+import { deepPurple } from '@mui/material/colors';
 
-export default makeStyles((theme) => ({
+// Create a theme-aware style object
+const styles = (theme) => ({
   appBar: {
     borderRadius: 15,
     margin: '30px 0',
@@ -59,4 +60,11 @@ export default makeStyles((theme) => ({
     color: theme.palette.getContrastText(deepPurple[500]),
     backgroundColor: deepPurple[500],
   },
-}));
+});
+
+// Custom hook to use the styles
+const useStyles = () => {
+  return styles;
+};
+
+export default useStyles;

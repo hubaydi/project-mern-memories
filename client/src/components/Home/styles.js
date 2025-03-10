@@ -1,6 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
 
-export default makeStyles((theme) => ({
+// Create a theme-aware style object
+const styles = (theme) => ({
   appBarSearch: {
     borderRadius: 4,
     marginBottom: '1rem',
@@ -13,8 +14,19 @@ export default makeStyles((theme) => ({
     padding: '16px',
   },
   gridContainer: {
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       flexDirection: 'column-reverse',
     },
   },
-}));
+  searchButton: {
+    marginTop: '10px',
+  }
+});
+
+// Custom hook to use the styles
+const useStyles = () => {
+  return styles;
+};
+
+export default useStyles;
+// update this file to make combatible with the latest versions of their respective packages
