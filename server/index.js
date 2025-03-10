@@ -24,7 +24,7 @@ app.use("/user", userRouter);
 
 // Database connection
 const CONNECTION_URL = process.env.MONGODB_URI;
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 // Connect to MongoDB using Mongoose 8+ syntax
 mongoose.connect(CONNECTION_URL)

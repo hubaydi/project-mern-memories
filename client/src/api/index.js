@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const API = axios.create({ 
   baseURL: 'http://localhost:5000',
@@ -11,7 +12,29 @@ const API = axios.create({
 // Request interceptor
 API.interceptors.request.use((req) => {
   if (localStorage.getItem('profile')) {
-    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`;
+    const profile = JSON.parse(localStorage.getItem('profile'));
+    const token = profile?.token;
+    
+    // Check if token is expired
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        
+        if (decodedToken.exp < currentTime) {
+          // Token expired, clear storage and don't add to header
+          localStorage.removeItem('profile');
+          console.warn('Token expired, please login again');
+          return req;
+        }
+      } catch (error) {
+        console.error('Token validation error:', error);
+        localStorage.removeItem('profile');
+        return req;
+      }
+    }
+    
+    req.headers.Authorization = `Bearer ${token}`;
   }
 
   return req;
@@ -33,6 +56,13 @@ API.interceptors.response.use(
     // Handle timeout errors
     if (error.code === 'ECONNABORTED') {
       console.error('Request timed out - please try again');
+    }
+
+    // Handle authentication errors
+    if (error.response?.status === 401) {
+      console.error('Authentication error - please login again');
+      localStorage.removeItem('profile');
+      window.location.href = '/auth';
     }
 
     // Handle server errors

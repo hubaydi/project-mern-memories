@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Avatar, Button, Paper, Grid, Typography, Container, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { jwtDecode } from 'jwt-decode';
 
 import Icon from './icon';
 import { signin, signup } from '../../actions/auth';
@@ -39,26 +40,34 @@ const SignUp = () => {
   };
 
   const googleSuccess = async (res) => {
-    const result = res?.profileObj;
-    const token = res?.tokenId;
-
     try {
-      dispatch({ type: AUTH, data: { result, token } });
+      const token = res?.credential;
+      // Using jwt-decode v4 syntax
+      const decodedToken = token ? jwtDecode(token) : null;
+      const result = {
+        _id: decodedToken?.sub,
+        name: decodedToken?.name,
+        email: decodedToken?.email,
+        imageUrl: decodedToken?.picture
+      };
 
+      dispatch({ type: AUTH, data: { result, token } });
       navigate('/');
     } catch (error) {
-      console.log(error);
+      console.error('Google Sign In error:', error);
     }
   };
 
-  const googleError = () => console.log('Google Sign In was unsuccessful. Try again later');
+  const googleError = (error) => {
+    console.error('Google Sign In was unsuccessful:', error);
+  };
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   return (
     <Container component="main" maxWidth="xs">
       <Paper sx={styles(theme => theme).paper} elevation={6}>
-        <Avatar sx={styles(theme => theme).avatar}> // check this
+        <Avatar sx={styles(theme => theme).avatar}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">{ isSignup ? 'Sign up' : 'Sign in' }</Typography>
@@ -78,23 +87,9 @@ const SignUp = () => {
             { isSignup ? 'Sign Up' : 'Sign In' }
           </Button>
           {/* <GoogleLogin
-            clientId="564033717568-bu2nr1l9h31bhk9bff4pqbenvvoju3oq.apps.googleusercontent.com"
-            render={(renderProps) => (
-              <Button 
-                sx={styles(theme => theme).googleButton} 
-                color="primary" 
-                fullWidth 
-                onClick={renderProps.onClick} 
-                disabled={renderProps.disabled} 
-                startIcon={<Icon />} 
-                variant="contained"
-              >
-                Google Sign In
-              </Button>
-            )}
             onSuccess={googleSuccess}
-            onFailure={googleError}
-            cookiePolicy="single_host_origin"
+            onError={googleError}
+            useOneTap
           /> */}
           <Grid container justifyContent="flex-end">
             <Grid item>
