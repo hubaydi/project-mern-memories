@@ -1,16 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { Typography, TextField, Button, Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
 import { commentPost } from '../../actions/posts';
-import useStyles from './styles';
 
 const CommentSection = ({ post }) => {
   const user = JSON.parse(localStorage.getItem('profile'));
   const [comment, setComment] = useState('');
   const dispatch = useDispatch();
   const [comments, setComments] = useState(post?.comments);
-  const styles = useStyles();
   const commentsRef = useRef();
 
   const handleComment = async () => {
@@ -23,28 +20,38 @@ const CommentSection = ({ post }) => {
   };
 
   return (
-    <Box>
-      <Box sx={styles.commentsOuterContainer}>
-        <Box sx={styles.commentsInnerContainer}>
-          <Typography gutterBottom variant="h6">Comments</Typography>
+    <div>
+      <div className="flex flex-col md:flex-row">
+        <div className="md:w-1/2">
+          <h6 className="font-bold mb-2">Comments</h6>
           {comments?.map((c, i) => (
-            <Typography key={i} gutterBottom variant="subtitle1">
+            <p key={i} className="mb-1">
               <strong>{c.split(': ')[0]}</strong>
               {c.split(':')[1]}
-            </Typography>
+            </p>
           ))}
           <div ref={commentsRef} />
-        </Box>
-        <Box sx={{ width: '70%' }}>
-          <Typography gutterBottom variant="h6">Write a comment</Typography>
-          <TextField fullWidth rows={4} variant="outlined" label="Comment" multiline value={comment} onChange={(e) => setComment(e.target.value)} />
+        </div>
+        <div className="md:w-1/2">
+          <h6 className="font-bold mb-2">Write a comment</h6>
+          <textarea
+            className="w-full border rounded py-2 px-3 mb-2"
+            rows={4}
+            placeholder="Comment"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
           <br />
-          <Button sx={{ marginTop: '10px' }} fullWidth disabled={!comment.length} color="primary" variant="contained" onClick={handleComment}>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 w-full"
+            disabled={!comment.length}
+            onClick={handleComment}
+          >
             Comment
-          </Button>
-        </Box>
-      </Box>
-    </Box>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from '@mui/material';
+// import { Container } from '@mui/material'; // Remove MUI import
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import PostDetails from './components/PostDetails/PostDetails';
@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Container maxWidth="xl">
+      <div className="max-w-7xl mx-auto"> {/* Replace Container with div and apply Tailwind classes */}
         <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/posts" replace />} />
@@ -24,7 +24,7 @@ const App = () => {
           <Route path="/tags/:name" element={<CreatorOrTag />} />
           <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/posts" replace />} />
         </Routes>
-      </Container>
+      </div> {/* Replace Container with div */}
     </BrowserRouter>
   );
 };

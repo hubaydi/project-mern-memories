@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { Typography, CircularProgress, Grid, Divider, Box } from '@mui/material';
+// import { Typography, CircularProgress, Grid, Divider, Box } from '@mui/material'; // Remove MUI imports
 import { useDispatch, useSelector } from 'react-redux';
 
 import Post from '../Posts/Post/Post';
@@ -24,19 +24,19 @@ const CreatorOrTag = () => {
   if (!posts.length && !isLoading) return 'No posts';
 
   return (
-    <Box>
-      <Typography variant="h2">{name}</Typography>
-      <Divider sx={{ margin: '20px 0 50px 0' }} />
+    <div> {/* Replace Box with div */}
+      <h2 className="text-2xl font-bold">{name}</h2> {/* Replace Typography with h2 and add Tailwind classes */}
+      <hr className="my-4" /> {/* Replace Divider with hr and add Tailwind classes */}
       {isLoading ? <CircularProgress /> : (
-        <Grid container alignItems="stretch" spacing={3}>
+        <div className="flex flex-wrap"> {/* Replace Grid with div and add Tailwind classes */}
           {posts?.map((post) => (
-            <Grid key={post._id} item xs={12} sm={12} md={6} lg={3}>
+            <div key={post._id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"> {/* Replace Grid with div and add Tailwind classes */}
               <Post post={post} />
-            </Grid>
+            </div>
           ))}
-        </Grid>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 

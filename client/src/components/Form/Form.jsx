@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Paper, Box, Autocomplete } from '@mui/material';
+// import { TextField, Button, Typography, Paper, Box, Autocomplete } from '@mui/material'; // Remove MUI imports
 import { useDispatch, useSelector } from 'react-redux';
 import FileBase from 'react-file-base64';
 import { useNavigate } from 'react-router-dom';
 
 import { createPost, updatePost } from '../../actions/posts';
-import useStyles from './styles';
+// import useStyles from './styles'; // Remove useStyles
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '' });
   const post = useSelector((state) => (currentId ? state.posts.posts.find((message) => message._id === currentId) : null));
   const dispatch = useDispatch();
-  const styles = useStyles();
+  // const styles = useStyles(); // Remove useStyles
   const user = JSON.parse(localStorage.getItem('profile'));
   const navigate = useNavigate();
 
@@ -39,11 +39,11 @@ const Form = ({ currentId, setCurrentId }) => {
 
   if (!user?.result?.name) {
     return (
-      <Paper sx={styles.paper} elevation={6}>
-        <Typography variant="h6" align="center">
+      <div className="bg-white rounded-lg shadow-md p-6"> {/* Replace Paper with div and add Tailwind classes */}
+        <h6 className='text-center' >
           Please Sign In to create your own memories and like other's memories.
-        </Typography>
-      </Paper>
+        </h6>
+      </div>
     );
   }
 
@@ -56,74 +56,69 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   return (
-    <Paper sx={styles.paper} elevation={6}>
-      <form 
-        autoComplete="off" 
-        noValidate 
-        sx={{
-          ...styles.root,
-          ...styles.form
-        }} 
+    <div className="bg-white rounded-lg shadow-md p-6"> {/* Replace Paper with div and add Tailwind classes */}
+      <form
+        autoComplete="off"
+        noValidate
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">{currentId ? `Editing "${post?.title}"` : 'Creating a Memory'}</Typography>
-        <TextField 
-          name="title" 
-          variant="outlined" 
-          label="Title" 
-          fullWidth 
-          value={postData.title} 
-          onChange={(e) => setPostData({ ...postData, title: e.target.value })} 
-        />
-        <TextField 
-          name="message" 
-          variant="outlined" 
-          label="Message" 
-          fullWidth 
-          multiline 
-          rows={4} 
-          value={postData.message} 
-          onChange={(e) => setPostData({ ...postData, message: e.target.value })} 
-        />
-        <Box sx={{ padding: '5px 0', width: '94%' }}>
-          <Autocomplete
-            name="tags"
-            variant="outlined"
-            label="Tags"
-            fullWidth
-            value={postData.tags}
-            onAdd={(chip) => handleAddChip(chip)}
-            onDelete={(chip) => handleDeleteChip(chip)}
-          />
-        </Box>
-        <Box sx={styles.fileInput}>
-          <FileBase 
-            type="file" 
-            multiple={false} 
-            onDone={({ base64 }) => setPostData({ ...postData, selectedFile: base64 })} 
-          />
-        </Box>
-        <Button 
-          sx={styles.buttonSubmit} 
-          variant="contained" 
-          color="primary" 
-          size="large" 
-          type="submit" 
+        <h6 className="text-lg font-bold mb-4">{currentId ? `Editing "${post?.title}"` : 'Creating a Memory'}</h6> {/* Replace Typography with h6 and add Tailwind classes */}
+        <input /* Replace TextField with input and add Tailwind classes */
+          name="title"
+          variant="outlined"
+          label="Title"
           fullWidth
+          className="w-full border rounded py-2 px-3 mb-4"
+          value={postData.title}
+          onChange={(e) => setPostData({ ...postData, title: e.target.value })}
+        />
+        <textarea /* Replace TextField with textarea and add Tailwind classes */
+          name="message"
+          variant="outlined"
+          label="Message"
+          fullWidth
+          multiline
+          rows={4}
+          className="w-full border rounded py-2 px-3 mb-4"
+          value={postData.message}
+          onChange={(e) => setPostData({ ...postData, message: e.target.value })}
+        />
+        <div className="mb-4"> {/* Replace Box with div and add Tailwind classes */}
+          {/*  The Autocomplete component is complex and would require a custom implementation with Tailwind CSS.
+              Consider using a library like react-select for a more customizable select component. */}
+          <input
+            type="text"
+            placeholder="Tags"
+            className="w-full border rounded py-2 px-3"
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleAddChip(e.target.value);
+                e.target.value = '';
+              }
+            }}
+          />
+        </div>
+        <div className="mb-4"> {/* Replace Box with div and add Tailwind classes */}
+          <FileBase
+            type="file"
+            multiple={false}
+            onDone={({ base64 }) => setPostData({ ...postData, selectedFile: base64 })}
+          />
+        </div>
+        <button /* Replace Button with button and add Tailwind classes */
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-2"
+          type="submit"
         >
           Submit
-        </Button>
-        <Button 
-          variant="contained" 
-          color="secondary" 
-          size="small" 
-          onClick={clear} 
-          fullWidth
+        </button>
+        <button /* Replace Button with button and add Tailwind classes */
+          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded w-full"
+          onClick={clear}
         >
           Clear
-        </Button>
+        </button>
       </form>
-    </Paper>
+    </div>
   );
 };
 

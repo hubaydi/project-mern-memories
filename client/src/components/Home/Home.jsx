@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Grow, Grid, AppBar, TextField, Button, Paper, Chip, Box } from '@mui/material';
+// import { Container, Grow, Grid, AppBar, TextField, Button, Paper, Chip, Box } from '@mui/material'; // Remove MUI imports
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -7,14 +7,14 @@ import { getPostsBySearch } from '../../actions/posts';
 import Posts from '../Posts/Posts';
 import Form from '../Form/Form';
 import Pagination from '../Pagination';
-import useStyles from './styles';
+// import useStyles from './styles'; // Remove useStyles
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 const Home = () => {
-  const styles = useStyles();
+  // const styles = useStyles(); // Remove styles
   const query = useQuery();
   const page = query.get('page') || 1;
   const searchQuery = query.get('searchQuery');
@@ -50,48 +50,39 @@ const Home = () => {
   };
 
   return (
-    <Grow in>
-      <Container maxWidth="xl">
-        <Grid 
-          container 
-          justifyContent="space-between" 
-          alignItems="stretch" 
-          spacing={3} 
-          sx={styles.gridContainer}
-        >
-          <Grid item xs={12} sm={6} md={9}>
+    <div className="grow"> {/* Replace Grow with div and add Tailwind class */}
+      <div className="max-w-7xl mx-auto"> {/* Replace Container with div and add Tailwind class */}
+        <div className="flex justify-between items-stretch space-x-3"> {/* Replace Grid with div and add Tailwind classes */}
+          <div className="w-full sm:w-1/2 md:w-3/4"> {/* Replace Grid with div and add Tailwind classes */}
             <Posts setCurrentId={setCurrentId} />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <AppBar 
-              sx={styles.appBarSearch} 
-              position="static" 
-              color="inherit"
-            >
-              <TextField 
-                onKeyPress={handleKeyPress} 
-                name="search" 
-                variant="outlined" 
-                label="Search Memories" 
-                fullWidth 
-                value={search} 
-                onChange={(e) => setSearch(e.target.value)} 
+          </div>
+          <div className="w-full sm:w-1/2 md:w-1/4"> {/* Replace Grid with div and add Tailwind classes */}
+            <div className="bg-white p-4 rounded shadow"> {/* Replace AppBar with div and add Tailwind classes */}
+              <input /* Replace TextField with input and add Tailwind classes */
+                type="text"
+                placeholder="Search Memories"
+                className="w-full border rounded py-2 px-3 mb-2"
+                onKeyDown={handleKeyPress}
+                name="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
-              <Box sx={{ margin: '10px 0', display: 'flex', flexWrap: 'wrap' }}>
+              <div className="my-2 flex flex-wrap"> {/* Replace Box with div and add Tailwind classes */}
                 {tags.map((tag) => (
-                  <Chip
+                  <div /* Replace Chip with div and add Tailwind classes */
                     key={tag}
-                    label={tag}
-                    onDelete={() => handleDeleteChip(tag)}
-                    color="primary"
-                    variant="outlined"
-                    sx={{ margin: '0 5px 5px 0' }}
-                  />
+                    className="bg-blue-500 text-white rounded-full px-2 py-1 m-1 text-sm"
+                  >
+                    {tag}
+                    <button onClick={() => handleDeleteChip(tag)} className="ml-1">
+                      &times;
+                    </button>
+                  </div>
                 ))}
-                <TextField
-                  variant="outlined"
-                  label="Search Tags"
-                  fullWidth
+                <input /* Replace TextField with input and add Tailwind classes */
+                  type="text"
+                  placeholder="Search Tags"
+                  className="w-full border rounded py-2 px-3"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       handleAddChip(e.target.value);
@@ -99,26 +90,24 @@ const Home = () => {
                     }
                   }}
                 />
-              </Box>
-              <Button 
-                onClick={searchPost} 
-                sx={styles.searchButton} 
-                variant="contained" 
-                color="primary"
+              </div>
+              <button /* Replace Button with button and add Tailwind classes */
+                onClick={searchPost}
+                className="bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full"
               >
                 Search
-              </Button>
-            </AppBar>
+              </button>
+            </div>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
             {(!searchQuery && !tags.length) && (
-              <Paper sx={styles.pagination} elevation={6}>
+              <div className="bg-white p-4 rounded shadow mt-4"> {/* Replace Paper with div and add Tailwind classes */}
                 <Pagination page={page} />
-              </Paper>
+              </div>
             )}
-          </Grid>
-        </Grid>
-      </Container>
-    </Grow>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
