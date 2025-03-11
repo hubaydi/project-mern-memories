@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="max-w-7xl mx-auto px-5 lg:py-8"> {/* Replace Container with div and apply Tailwind classes */}
+      <div className="max-w-7xl mx-auto px-5 md:px-8"> {/* Replace Container with div and apply Tailwind classes */}
         <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/posts" replace />} />
@@ -24,7 +24,7 @@ const App = () => {
           <Route path="/tags/:name" element={<CreatorOrTag />} />
           <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/posts" replace />} />
         </Routes>
-      </div> {/* Replace Container with div */}
+      </div>
     </BrowserRouter>
   );
 };

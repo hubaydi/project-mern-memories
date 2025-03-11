@@ -59,11 +59,11 @@ const Post = ({ post, setCurrentId }) => {
   };
 
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg">
+    <div className="max-w-sm rounded-xl overflow-hidden border border-gray-300 shadow-lg">
       <div 
         role="button"
         tabIndex="0"
-        className="block h-48 w-full relative cursor-pointer" 
+        className="block w-full relative cursor-pointer" 
         onClick={openPost}
         onKeyDown={(e) => e.key === 'Enter' && openPost()}
       >
@@ -73,34 +73,34 @@ const Post = ({ post, setCurrentId }) => {
           alt={post.title}
         />
         <div className="absolute top-0 left-0 m-2">
-          <div className="text-white font-bold text-xl">{post.name}</div>
-          <p className="text-white text-sm">{moment(post.createdAt).fromNow()}</p>
+          <div className="text-gray-700 font-bold md:text-xl">{post.name}</div>
+          <p className="text-gray-600 text-sm md:text-md">{moment(post.createdAt).fromNow()}</p>
         </div>
         {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
-          <div className="absolute top-0 right-0 m-2" name="edit">
+          <div className="absolute top-0 right-0 m-2 " name="edit">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setCurrentId(post._id);
               }}
-              className="text-white hover:text-gray-300 focus:outline-none"
+              className="text-gray-500 hover:text-gray-400 focus:outline-none"
             >
               <MoreHorizIcon fontSize="medium" />
             </button>
           </div>
         )}
-        <div className="px-6 py-4">
-          <div className="font-bold text-xl mb-2">{post.title}</div>
+        <div className="px-5 py-4">
+          <div className="font-bold text-xl mb-2">{post.title.split(' ').splice(0, 20).join(' ')}...</div>
           <p className="text-gray-700 text-base">
             {post.message.split(' ').splice(0, 20).join(' ')}...
           </p>
         </div>
       </div>
-      <div className="px-6 pt-4 pb-2">
+      <div className="px-5 pt-4 pb-2">
         <button
           type="button"
-          className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+          className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer"
           disabled={!user?.result}
           onClick={handleLike}
         >
@@ -109,7 +109,7 @@ const Post = ({ post, setCurrentId }) => {
         {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
           <button
             type="button"
-            className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+            className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer"
             onClick={() => dispatch(deletePost(post._id))}
           >
             <DeleteIcon fontSize="small" />

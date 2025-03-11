@@ -7,14 +7,12 @@ import { getPostsBySearch } from '../actions/posts';
 import Posts from './Posts/Posts';
 import Form from './Form';
 import Pagination from './Pagination';
-// import useStyles from './styles'; // Remove useStyles
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 const Home = () => {
-  // const styles = useStyles(); // Remove styles
   const query = useQuery();
   const page = query.get('page') || 1;
   const searchQuery = query.get('searchQuery');
@@ -50,14 +48,14 @@ const Home = () => {
   };
 
   return (
-    <div className="grow"> {/* Replace Grow with div and add Tailwind class */}
+    <div className="grow mt-10"> {/* Replace Grow with div and add Tailwind class */}
       <div className="max-w-7xl mx-auto"> {/* Replace Container with div and add Tailwind class */}
-        <div className="flex justify-between items-stretch space-x-3"> {/* Replace Grid with div and add Tailwind classes */}
-          <div className="w-full sm:w-1/2 md:w-3/4"> {/* Replace Grid with div and add Tailwind classes */}
+        <div className="flex flex-col md:flex-row justify-between items-start space-x-2"> {/* Replace Grid with div and add Tailwind classes */}
+          <div className="w-full sm:w-full md:w-3/4 pt-10 md:pt-0"> {/* Replace Grid with div and add Tailwind classes */}
             <Posts setCurrentId={setCurrentId} />
           </div>
-          <div className="w-full sm:w-1/2 md:w-1/4"> {/* Replace Grid with div and add Tailwind classes */}
-            <div className="bg-white p-4 rounded shadow"> {/* Replace AppBar with div and add Tailwind classes */}
+          <div className="w-full sm:w-2/3 md:w-1/4 -order-1 mr-4"> {/* Replace Grid with div and add Tailwind classes */}
+            <div className="bg-white p-4 rounded shadow-md"> {/* Replace AppBar with div and add Tailwind classes */}
               <input /* Replace TextField with input and add Tailwind classes */
                 type="text"
                 placeholder="Search Memories"
@@ -83,7 +81,7 @@ const Home = () => {
                   type="text"
                   placeholder="Search Tags"
                   className="w-full border rounded py-2 px-3"
-                  onKeyPress={(e) => {
+                  onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleAddChip(e.target.value);
                       e.target.value = '';
