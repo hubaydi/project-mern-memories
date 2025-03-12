@@ -49,12 +49,11 @@ const Home = () => {
 
   return (
     <div className="grow mt-10"> {/* Replace Grow with div and add Tailwind class */}
-      <div className="max-w-7xl mx-auto"> {/* Replace Container with div and add Tailwind class */}
-        <div className="flex flex-col md:flex-row justify-between items-start space-x-2"> {/* Replace Grid with div and add Tailwind classes */}
-          <div className="w-full sm:w-full md:w-3/4 pt-10 md:pt-0"> {/* Replace Grid with div and add Tailwind classes */}
+        <div className="flex flex-col items-center md:flex-row justify-between md:items-start space-x-2"> {/* Replace Grid with div and add Tailwind classes */}
+          <div className="w-full md:w-3/4 pt-10 md:pt-0"> {/* Replace Grid with div and add Tailwind classes */}
             <Posts setCurrentId={setCurrentId} />
           </div>
-          <div className="w-full sm:w-2/3 md:w-1/4 -order-1 mr-4"> {/* Replace Grid with div and add Tailwind classes */}
+          <div className="w-full min-w-[250px] sm:w-2/3 md:w-1/4 -order-1 mr-4"> {/* Replace Grid with div and add Tailwind classes */}
             <div className="bg-white p-4 rounded shadow-md"> {/* Replace AppBar with div and add Tailwind classes */}
               <input /* Replace TextField with input and add Tailwind classes */
                 type="text"
@@ -98,14 +97,13 @@ const Home = () => {
             </div>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
             {(!searchQuery && !tags.length) && (
-              <div className="bg-white p-4 rounded shadow mt-4"> {/* Replace Paper with div and add Tailwind classes */}
+              <div className="bg-white p-4 rounded shadow my-4"> {/* Replace Paper with div and add Tailwind classes */}
                 <Pagination page={page} />
               </div>
             )}
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

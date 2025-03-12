@@ -39,8 +39,8 @@ const Form = ({ currentId, setCurrentId }) => {
 
   if (!user?.result?.name) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6"> {/* Replace Paper with div and add Tailwind classes */}
-        <h6 className='text-center' >
+      <div className="bg-white rounded-lg shadow-lg mt-4 p-6"> {/* Replace Paper with div and add Tailwind classes */}
+        <h6 className='text-center ' >
           Please Sign In to create your own memories and like other's memories.
         </h6>
       </div>
