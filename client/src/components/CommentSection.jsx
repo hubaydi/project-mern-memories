@@ -21,21 +21,11 @@ const CommentSection = ({ post }) => {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/2">
-          <h6 className="font-bold mb-2">Comments</h6>
-          {comments?.map((c, i) => (
-            <p key={i} className="mb-1">
-              <strong>{c.split(': ')[0]}</strong>
-              {c.split(':')[1]}
-            </p>
-          ))}
-          <div ref={commentsRef} />
-        </div>
-        <div className="md:w-1/2">
-          <h6 className="font-bold mb-2">Write a comment</h6>
+      <div className="flex flex-col">
+      <div className="max-w-xl">
+          <h6 className="font-bold mb-2 text-gray-500">Write a comment</h6>
           <textarea
-            className="w-full border rounded py-2 px-3 mb-2"
+            className="w-full border rounded py-2 px-3 mb-2 resize-none"
             rows={4}
             placeholder="Comment"
             value={comment}
@@ -49,6 +39,20 @@ const CommentSection = ({ post }) => {
           >
             Comment
           </button>
+        </div>
+        <div className="my-4">
+          <h6 className="font-bold mb-2 text-gray-500">Comments {comments?.length}</h6>
+          
+          {comments?.map((c, i) => (
+            <div className='flex gap-2 items-start m-2 bg-gray-100 p-2 rounded-lg' key={i}>  
+              <img src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80" className='size-10 rounded-full border-2 border-green' alt="" />
+              <div div className="mb-1 flex flex-col">
+              <span className='font-bold'>{c.split(': ')[0]}</span>
+              {c.split(':')[1]}
+              </div>
+            </div>
+          ))}
+          <div ref={commentsRef} />
         </div>
       </div>
     </div>

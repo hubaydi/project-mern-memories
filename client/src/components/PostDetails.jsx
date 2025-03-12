@@ -1,18 +1,14 @@
 import React, { useEffect } from 'react';
-// import { Paper, Typography, CircularProgress, Divider, Box, Link as MuiLink } from '@mui/material'; // Remove MUI imports
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-
 import { getPost, getPostsBySearch } from '../actions/posts';
 import CommentSection from './CommentSection';
-// import useStyles from './styles'; // Remove useStyles
 
 const Post = () => {
   const { post, posts, isLoading } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const styles = useStyles(); // Remove useStyles
   const { id } = useParams();
 
   useEffect(() => {
@@ -42,47 +38,59 @@ const Post = () => {
   const recommendedPosts = posts.filter(({ _id }) => _id !== post._id);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6"> {/* Replace Paper with div and add Tailwind classes */}
-      <div className="flex flex-col md:flex-row"> {/* Replace Card with div and add Tailwind classes */}
-        <div className="md:w-2/3"> {/* Replace section with div and add Tailwind classes */}
-          <h2 className="text-2xl font-bold mb-2">{post.title}</h2> {/* Replace Typography with h2 and add Tailwind classes */}
-          <div className="mb-2"> {/* Replace Typography with div and add Tailwind classes */}
+    <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+      <div className="flex flex-col gap-4 max-w-3xl mx-auto">
+        <div className="">
+          <h2 className="text-lg font-bold mb-2">{post.title}</h2>
+          <div className="flex justify-between items-center mt-4">
+            <h6 className="font-semibold text-gray-400 text-sm">
+              Created by:
+              <Link to={`/creators/${post.name}`} className="text-blue-500 hover:underline ml-1">
+                {post.name}
+              </Link>
+            </h6>
+            <p className="text-gray-500 text-sm">{moment(post.createdAt).fromNow()}</p>
+          </div>
+          <div className="my-6 flex justify-center">
+          <img
+            className="w-full max-w-xl rounded-md object-cover max-h-96"
+            src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
+            alt={post.title}
+          />
+        </div>
+          <div className="flex flex-wrap gap-2 mb-2">
             {post.tags.map((tag) => (
-              <Link to={`/tags/${tag}`} className="text-blue-500 hover:underline mr-2" key={tag}> {/* Replace MuiLink with Link and add Tailwind classes */}
-                {` #${tag} `}
+              <Link to={`/tags/${tag}`} className="text-blue-500 hover:underline text-sm" key={tag}>
+                {`#${tag}`}
               </Link>
             ))}
           </div>
-          <p className="text-gray-700 mb-4">{post.message}</p> {/* Replace Typography with p and add Tailwind classes */}
-          <h6 className="font-bold"> {/* Replace Typography with h6 and add Tailwind classes */}
-            Created by:
-            <Link to={`/creators/${post.name}`} className="text-blue-500 hover:underline"> {/* Replace MuiLink with Link and add Tailwind classes */}
-              {` ${post.name}`}
-            </Link>
-          </h6>
-          <p className="text-gray-500">{moment(post.createdAt).fromNow()}</p> {/* Replace Typography with p and add Tailwind classes */}
-          <hr className="my-4" /> {/* Replace Divider with hr and add Tailwind classes */}
-          <p className="text-gray-700"><strong>Realtime Chat - coming soon!</strong></p> {/* Replace Typography with p and add Tailwind classes */}
-          <hr className="my-4" /> {/* Replace Divider with hr and add Tailwind classes */}
-          <CommentSection post={post} />
-          <hr className="my-4" /> {/* Replace Divider with hr and add Tailwind classes */}
-        </div>
-        <div className="md:w-1/3"> {/* Replace imageSection with div and add Tailwind classes */}
-          <img className="w-full rounded-md" src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} alt={post.title} />
+          <p className="text-gray-700 leading-relaxed">{post.message}</p>
+          <hr className="my-5 border-gray-200" />
+          {/* <p className="text-gray-700 font-semibold">Realtime Chat - coming soon!</p> */}
+          {/* <hr className="my-5 border-gray-200" /> */}
+          <div className="mt-4">
+            <CommentSection post={post} />
+          </div>
+          <hr className="my-5 border-gray-200" />
         </div>
       </div>
-      {!!recommendedPosts.length && (
-        <div className="mt-6"> {/* Replace section with div and add Tailwind classes */}
-          <h5 className="text-lg font-bold mb-2">You might also like:</h5> {/* Replace Typography with h5 and add Tailwind classes */}
-          <hr /> {/* Replace Divider with hr and add Tailwind classes */}
-          <div className="flex flex-wrap"> {/* Replace recommendedPosts with div and add Tailwind classes */}
+      {recommendedPosts.length > 0 && (
+        <div className="mt-8">
+          <h5 className="text-lg font-bold mb-3">You might also like:</h5>
+          <hr className="border-gray-200 mb-4" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {recommendedPosts.map(({ title, name, message, likes, selectedFile, _id }) => (
-              <div className="w-full md:w-1/2 lg:w-1/3 p-2 cursor-pointer" onClick={() => openPost(_id)} key={_id}> {/* Replace Box with div and add Tailwind classes */}
-                <h6 className="text-md font-bold">{title}</h6> {/* Replace Typography with h6 and add Tailwind classes */}
-                <p className="text-sm text-gray-600">{name}</p> {/* Replace Typography with p and add Tailwind classes */}
-                <p className="text-sm text-gray-600">{message}</p> {/* Replace Typography with p and add Tailwind classes */}
-                <p className="text-sm">Likes: {likes.length}</p> {/* Replace Typography with p and add Tailwind classes */}
-                <img src={selectedFile} width="200px" alt={title} className="rounded-md" />
+              <div
+                className="rounded-md shadow-sm hover:shadow-md transition duration-300 cursor-pointer p-3"
+                onClick={() => openPost(_id)}
+                key={_id}
+              >
+                <h6 className="text-md font-bold">{title}</h6>
+                <p className="text-sm text-gray-600">{name}</p>
+                <p className="text-sm text-gray-600 line-clamp-2">{message}</p>
+                <p className="text-sm">Likes: {likes.length}</p>
+                <img src={selectedFile} alt={title} className="rounded-md w-full object-cover aspect-square mt-2" style={{height: '120px'}} />
               </div>
             ))}
           </div>
