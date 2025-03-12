@@ -41,11 +41,11 @@ const Post = () => {
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
       <div className="flex flex-col gap-4 max-w-3xl mx-auto">
         <div className="">
-          <h2 className="text-lg font-bold mb-2">{post.title}</h2>
+          <h2 className="text-lg font-bold mb-2 text-[#09abcb]">{post.title}</h2>
           <div className="flex justify-between items-center mt-4">
             <h6 className="font-semibold text-gray-400 text-sm">
               Created by:
-              <Link to={`/creators/${post.name}`} className="text-blue-500 hover:underline ml-1">
+              <Link to={`/creators/${post.name}`} className="text-[#09abcb] hover:underline ml-1">
                 {post.name}
               </Link>
             </h6>
@@ -60,7 +60,7 @@ const Post = () => {
         </div>
           <div className="flex flex-wrap gap-2 mb-2">
             {post.tags.map((tag) => (
-              <Link to={`/tags/${tag}`} className="text-blue-500 hover:underline text-sm" key={tag}>
+              <Link to={`/tags/${tag}`} className="text-[#09abcb] hover:underline text-sm" key={tag}>
                 {`#${tag}`}
               </Link>
             ))}

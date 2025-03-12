@@ -72,9 +72,10 @@ const Post = ({ post, setCurrentId }) => {
           src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
           alt={post.title}
         />
+        <div className="overlay absolute left-0 top-0 size-full rounded-[10px]"></div>
         <div className="absolute top-0 left-0 m-2">
-          <div className="text-gray-700 font-bold md:text-xl">{post.name}</div>
-          <p className="text-gray-600 text-sm md:text-md">{moment(post.createdAt).fromNow()}</p>
+          <div className="text-white font-bold">{post.name}</div>
+          <p className="text-white text-sm">{moment(post.createdAt).fromNow()}</p>
         </div>
         {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
           <div className="absolute top-0 right-0 m-2 " name="edit">
@@ -91,16 +92,16 @@ const Post = ({ post, setCurrentId }) => {
           </div>
         )}
         <div className="px-5 py-4">
-          <div className="font-bold text-xl mb-2">{post.title.split(' ').splice(0, 20).join(' ')}...</div>
+          <div className="font-bold text-xl mb-2 text-[#09abcb]">{post.title.split(' ').splice(0, 10).join(' ')}...</div>
           <p className="text-gray-700 text-base">
             {post.message.split(' ').splice(0, 20).join(' ')}...
           </p>
         </div>
       </div>
-      <div className="px-5 pt-4 pb-2">
+      <div className="px-2 mt-4 mb-2">
         <button
           type="button"
-          className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer"
+          className="inline-block bg-[#f0911d21] rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer"
           disabled={!user?.result}
           onClick={handleLike}
         >
@@ -109,7 +110,7 @@ const Post = ({ post, setCurrentId }) => {
         {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
           <button
             type="button"
-            className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer"
+            className="inline-block bg-[#f0911d21] rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer"
             onClick={() => dispatch(deletePost(post._id))}
           >
             <DeleteIcon fontSize="small" />
