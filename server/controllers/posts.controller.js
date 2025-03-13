@@ -127,7 +127,7 @@ export const deletePost = async (req, res) => {
       return res.status(404).json({ message: 'Post not found. The post may have been deleted already.' });
     }
 
-    await PostMessage.findByIdAndRemove(id);
+    await PostMessage.findByIdAndDelete(id);
 
     res.json({ message: 'Post deleted successfully.' });
   } catch (error) {

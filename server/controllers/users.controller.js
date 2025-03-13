@@ -1,13 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 
 import UserModal from '../models/user.model.js';
 
-// Load environment variables
-dotenv.config();
-
-// Get JWT secret from environment variables or use default
 const secret = process.env.JWT_SECRET;
 
 export const signin = async (req, res) => {
@@ -37,7 +32,7 @@ export const signin = async (req, res) => {
     const token = jwt.sign(
       { email: existingUser.email, id: existingUser._id }, 
       secret, 
-      { expiresIn: "1h" }
+      { expiresIn: "7d" }
     );
     
     res.status(200).json({ result: existingUser, token });

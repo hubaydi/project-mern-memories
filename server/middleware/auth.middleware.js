@@ -1,10 +1,5 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 
-// Load environment variables
-dotenv.config();
-
-// Get JWT secret from environment variables or use default
 const secret = process.env.JWT_SECRET;
 
 const auth = async (req, res, next) => {
