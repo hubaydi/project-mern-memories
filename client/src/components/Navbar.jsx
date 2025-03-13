@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 // import { AppBar, Typography, Toolbar, Avatar, Button } from '@mui/material'; // Remove MUI imports
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -13,13 +13,13 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const logout = () => {
+  const logout = useCallback(() => {
     dispatch({ type: actionType.LOGOUT });
 
     navigate('/auth');
 
     setUser(null);
-  };
+  }, [dispatch, navigate]);
 
 useEffect(() => {
   const token = user?.token;

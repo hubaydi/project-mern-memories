@@ -11,20 +11,31 @@ import { likePost, deletePost } from '../../../actions/posts';
 
 const Post = ({ post, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem('profile'));
-  const [likes, setLikes] = useState(post?.likes);
+  const [likes, setLikes] = useState([...post?.likes]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const userId = user?.result.googleId || user?.result?._id;
-  const hasLikedPost = post.likes.find((like) => like === userId);
+  const hasLikedPost = post.likes.includes(userId);
 
   const handleLike = async () => {
-    dispatch(likePost(post._id));
-
+    //1.optimistic update (immediate ui change)
+    const newLikes = [...likes]
     if (hasLikedPost) {
-      setLikes(post.likes.filter((id) => id !== userId));
+        const index = newLikes.findIndex((id) => id === userId);
+        newLikes.splice(index, 1);
     } else {
-      setLikes([...post.likes, userId]);
+      newLikes.push(userId);
+    }
+    setLikes(newLikes);
+
+    //2. Send api request
+    try {
+      await dispatch(likePost(post._id));
+    } catch (error) {
+        //3. Rollback if API fails
+      console.error("Error liking post:", error);
+      setLikes([...post.likes]); // Revert to the original likes from the post data
     }
   };
 

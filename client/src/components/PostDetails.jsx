@@ -59,7 +59,7 @@ const Post = () => {
           />
         </div>
           <div className="flex flex-wrap gap-2 mb-2">
-            {post.tags.map((tag) => (
+            {post.tags?.map((tag) => (
               <Link to={`/tags/${tag}`} className="text-[#09abcb] hover:underline text-sm" key={tag}>
                 {`#${tag}`}
               </Link>
