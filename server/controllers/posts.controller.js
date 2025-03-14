@@ -3,8 +3,6 @@ import mongoose from 'mongoose';
 
 import PostMessage from '../models/post.model.js';
 
-const router = express.Router();
-
 export const getPosts = async (req, res) => {
   const { page } = req.query;
   
@@ -202,5 +200,3 @@ export const commentPost = async (req, res) => {
     res.status(500).json({ message: 'Failed to add comment. Please try again later.' });
   }
 };
-
-export default router;
