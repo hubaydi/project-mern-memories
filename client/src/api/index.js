@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const API = axios.create({ 
   baseURL: 'http://localhost:5000/api/v1',
-  timeout: 10000, // 10 seconds timeout
+  timeout: 60000, // 60 seconds
   headers: {
     'Content-Type': 'application/json',
   },
@@ -79,10 +79,18 @@ export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
 export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
 export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
 export const createPost = (newPost) => API.post('/posts', newPost);
-export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
-export const comment = (value, id) => API.post(`/posts/${id}/commentPost`, { value });
+export const likePost = (id) => API.patch(`/posts/${id}/like-post`);
+export const comment = (value, id) => API.post(`/posts/${id}/comment-post`, { value });
 export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 
 export const signIn = (formData) => API.post('/users/sign-in', formData);
 export const signUp = (formData) => API.post('/users/sign-up', formData);
+
+export const fetchProfile = (id) => API.get(`/profile/${id}`);
+export const updateProfile = (id, profileData) => API.patch(`/profile/${id}`, profileData);
+export const uploadProfilePicture = (id, formData) => API.post(`/profile/${id}/upload`, formData, {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+});

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams, useNavigate, Link } from 'react-router-dom';
@@ -12,14 +12,22 @@ const Post = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    dispatch(getPost(id));
+    const fetchData = async () => {
+      await dispatch(getPost(id));
+      if (post?.tags?.length > 0) {
+        const tags = post.tags.join(',');
+        dispatch(getPostsBySearch({ search: 'none', tags }))
+          .catch((error) => {
+            console.error('Error fetching recommended posts:', error);
+          });
+      }
+    };
+    fetchData();
   }, [id]);
 
-  useEffect(() => {
-    if (post) {
-      dispatch(getPostsBySearch({ search: 'none', tags: post?.tags.join(',') }));
-    }
-  }, [post]);
+  const recommendedPosts = useMemo(() => {
+    return posts.filter(({ _id }) => _id !== post?._id);
+  }, [posts, post?._id]);
 
   if (!post) return null;
 
@@ -34,8 +42,6 @@ const Post = () => {
       </div>
     );
   }
-
-  const recommendedPosts = posts.filter(({ _id }) => _id !== post._id);
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
@@ -89,7 +95,7 @@ const Post = () => {
                 <h6 className="text-md font-bold">{title}</h6>
                 <p className="text-sm text-gray-600">{name}</p>
                 <p className="text-sm text-gray-600 line-clamp-2">{message}</p>
-                <p className="text-sm">Likes: {likes.length}</p>
+                <p className="text-sm">Likes: {likes?.length}</p>
                 <img src={selectedFile} alt={title} className="rounded-md w-full object-cover aspect-square mt-2" style={{height: '120px'}} />
               </div>
             ))}

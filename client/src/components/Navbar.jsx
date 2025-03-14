@@ -45,7 +45,7 @@ useEffect(() => {
             <div className="size-6 md:size-10 rounded-full bg-purple-500 text-white flex items-center justify-center uppercase"> {/* Replace Avatar with div and add Tailwind classes */}
               {user?.result.name.charAt(0)}
             </div>
-            <p className="text-gray-800 text-sm md:text-base font-semibold mr-7">{user?.result.name}</p> {/* Replace Typography with p and add Tailwind classes */}
+            <Link to={`/profile/${user?.result?._id}`} className="text-gray-800 text-sm md:text-base font-semibold mr-7">{user?.result.name}</Link> {/* Replace Typography with p and add Tailwind classes */}
             <button className="bg-blue-500 hover:bg-blue-400 text-white text-sm font-bold py-2 px-4 rounded" onClick={logout}>Logout</button> {/* Replace Button with button and add Tailwind classes */}
           </div>
         ) : (

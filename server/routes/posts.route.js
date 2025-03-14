@@ -26,5 +26,4 @@ router.post('/:id/comment-post', auth, commentPost);
 router.get('/creator', getPostsByCreator);
 router.get('/search', getPostsBySearch);
 
-
 export default router;

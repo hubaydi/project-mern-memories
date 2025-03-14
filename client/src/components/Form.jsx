@@ -151,7 +151,7 @@ const Form = ({ currentId, setCurrentId }) => {
             id="message"
             name="message"
             rows={4}
-            className={`w-full border rounded py-2 px-3 ${errors.message ? 'border-red-500' : ''}`}
+            className={`w-full border rounded py-2 px-3 ${errors.message ? 'border-red-500' : ''} resize-none`}
             value={postData.message}
             onChange={handleChange}
             placeholder="Share your story..."
@@ -168,7 +168,7 @@ const Form = ({ currentId, setCurrentId }) => {
                 <button 
                   type="button"
                   onClick={() => handleDeleteChip(tag)} 
-                  className="ml-1 text-blue-500 hover:text-blue-800"
+                  className="ml-1 text-blue-500 hover:text-blue-800 cursor-pointer"
                 >
                   &times;
                 </button>
@@ -192,7 +192,7 @@ const Form = ({ currentId, setCurrentId }) => {
             />
             <button
               type="button"
-              className="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded"
+              className="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded cursor-pointer"
               onClick={() => handleAddChip(tagInput)}
             >
               Add
@@ -228,14 +228,14 @@ const Form = ({ currentId, setCurrentId }) => {
         </div>
         
         <button /* Replace Button with button and add Tailwind classes */
-          className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-2 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-2 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''} cursor-pointer`}
           type="submit"
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
         <button /* Replace Button with button and add Tailwind classes */
-          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded w-full"
+          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded w-full cursor-pointer"
           type="button"
           onClick={clear}
           disabled={isSubmitting}

@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Auth from './components/Auth';
 import CreatorOrTag from './components/CreatorOrTag';
+import ProfilePage from './components/ProfilePage';
 
 const App = () => {
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/creators/:name" element={<CreatorOrTag />} />
           <Route path="/tags/:name" element={<CreatorOrTag />} />
           <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/posts" replace />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
         </Routes>
       </div>
     </BrowserRouter>

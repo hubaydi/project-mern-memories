@@ -71,7 +71,7 @@ const Home = () => {
                     className="bg-blue-500 text-white rounded-full px-2 py-1 m-1 text-sm"
                   >
                     {tag}
-                    <button onClick={() => handleDeleteChip(tag)} className="ml-1">
+                    <button onClick={() => handleDeleteChip(tag)} className="ml-1 cursor-pointer">
                       &times;
                     </button>
                   </div>
@@ -90,7 +90,7 @@ const Home = () => {
               </div>
               <button /* Replace Button with button and add Tailwind classes */
                 onClick={searchPost}
-                className="bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full"
+                className="bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full cursor-pointer"
               >
                 Search
               </button>

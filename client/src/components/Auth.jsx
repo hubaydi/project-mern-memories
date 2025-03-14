@@ -24,7 +24,7 @@ const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
 
-  const handleShowPassword = () => setShowPassword(!showPassword);
+  const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
 
   const switchMode = () => {
     setForm(initialState);

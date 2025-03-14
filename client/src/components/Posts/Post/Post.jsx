@@ -11,12 +11,12 @@ import { likePost, deletePost } from '../../../actions/posts';
 
 const Post = ({ post, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem('profile'));
-  const [likes, setLikes] = useState([...post?.likes]);
+  const [likes, setLikes] = useState([...(post?.likes || [])]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const userId = user?.result.googleId || user?.result?._id;
-  const hasLikedPost = post.likes.includes(userId);
+  const hasLikedPost = post.likes?.includes(userId);
 
   const handleLike = async () => {
     //1.optimistic update (immediate ui change)
@@ -35,7 +35,7 @@ const Post = ({ post, setCurrentId }) => {
     } catch (error) {
         //3. Rollback if API fails
       console.error("Error liking post:", error);
-      setLikes([...post.likes]); // Revert to the original likes from the post data
+      setLikes([...(post.likes || [])]); // Revert to the original likes from the post data
     }
   };
 
