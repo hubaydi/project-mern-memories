@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import postRouter from './routes/posts.route.js';
 import userRouter from "./routes/users.route.js";
+import profileRouter from "./routes/profile.route.js";
 
 // Load environment variables
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(cors({
 // Routes
 app.use('/api/v1/posts', postRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/profile", profileRouter);
 
 // Database connection
 const CONNECTION_URL = process.env.MONGODB_URI;

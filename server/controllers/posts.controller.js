@@ -70,20 +70,17 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
   const post = req.body;
-  console.log(req.body);
-  console.log(req.userId);
 
   try {
-    // Validate required fields
     if (!post.title || !post.message) {
       return res.status(400).json({ message: 'Title and message are required fields.' });
     }
     
-    if (!post.selectedFile) {
+    if (!req.file) {
       return res.status(400).json({ message: 'Please select an image for your post.' });
     }
 
-    const newPost = new PostModel({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
+    const newPost = new PostModel({ ...post, creator: req.userId, selectedFile: req.file.filename, createdAt: new Date().toISOString() });
 
     await newPost.save();
 
@@ -102,15 +99,11 @@ export const updatePost = async (req, res) => {
       return res.status(404).json({ message: 'Post not found. Invalid ID format.' });
     }
 
-    if (!title || !message) {
-      return res.status(400).json({ message: 'Title and message are required fields.' });
-    }
-
     const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
 
-    await PostModel.findByIdAndUpdate(id, updatedPost, { new: true });
+    const post = await PostModel.findByIdAndUpdate(id, updatedPost, { new: true });
 
-    res.json({ data: updatedPost });
+    res.json({ data: post });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update post. Please try again later.' });
   }
@@ -176,9 +169,6 @@ export const commentPost = async (req, res) => {
   const { value } = req.body;
 
   try {
-    if (!req.userId) {
-      return res.status(401).json({ message: 'Unauthenticated. Please sign in to comment on posts.' });
-    }
     
     if (!value || value.trim() === '') {
       return res.status(400).json({ message: 'Comment cannot be empty.' });

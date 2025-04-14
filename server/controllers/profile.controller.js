@@ -3,7 +3,7 @@ import User from '../models/user.model.js';
 
 export const getProfile = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
+
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(404).json({ message: 'User not found. Invalid ID format.' });
@@ -23,7 +23,9 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   const { id } = req.params;
-  const { profilePicture, bio, website, twitter, instagram, facebook } = req.body;
+  const { bio, website, twitter, instagram, facebook } = req.body;
+  const profilePic = req.file ? req.file.path : null;
+  console.log(profilePic);
 
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -32,7 +34,7 @@ export const updateProfile = async (req, res) => {
 
     const updatedProfile = await User.findByIdAndUpdate(
       id,
-      { profilePicture, bio, website, twitter, instagram, facebook },
+      { profilePic, bio, website, twitter, instagram, facebook },
       { new: true }
     ).select('-password');
 
@@ -51,9 +53,13 @@ export const uploadProfilePicture = async (req, res) => {
       return res.status(404).json({ message: 'User not found. Invalid ID format.' });
     }
 
+    if (!file) {
+      return res.status(400).json({ message: 'No file uploaded.' });
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { profilePicture: file.path },
+      { profilePic: file.path },
       { new: true }
     ).select('-password');
 
