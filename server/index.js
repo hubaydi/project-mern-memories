@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
+import postRouter from './routes/posts.route.js';
+import userRouter from "./routes/users.route.js";
+
 // Load environment variables
 dotenv.config();
-
-import postRoutes from './routes/posts.route.js';
-import userRouter from "./routes/users.route.js";
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use(cors({
 }));
 
 // Routes
-app.use('/api/v1/posts', postRoutes);
+app.use('/api/v1/posts', postRouter);
 app.use("/api/v1/users", userRouter);
 
 // Database connection
@@ -28,7 +28,11 @@ const PORT = process.env.PORT;
 
 // Connect to MongoDB using Mongoose 8+ syntax
 mongoose.connect(CONNECTION_URL)
-  .then(() => app.listen(PORT, () => console.log(`Server Running on Port: http://localhost:${PORT}`)))
-  .catch((error) => console.log(`${error} did not connect`));
-
-// Note: useFindAndModify option has been removed in Mongoose 6+
+  .then(() =>
+    console.log('MongoDB Connected'))
+  .then(() =>
+    app.listen(PORT, () =>
+      console.log(`Server Running on Port: http://localhost:${PORT}`)))
+  .catch((error) =>
+    console.log(`${error} did not connect`)
+  );

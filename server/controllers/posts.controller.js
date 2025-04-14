@@ -1,17 +1,16 @@
-import express from 'express';
 import mongoose from 'mongoose';
 
-import PostMessage from '../models/post.model.js';
+import PostModel from '../models/post.model.js';
 
 export const getPosts = async (req, res) => {
   const { page } = req.query;
   
   try {
     const LIMIT = 8;
-    const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
+    const startIndex = (Number(page) - 1) * LIMIT; 
     
-    const total = await PostMessage.countDocuments({});
-    const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
+    const total = await PostModel.countDocuments({});
+    const posts = await PostModel.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
 
     res.status(200).json({ data: posts, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT)});
   } catch (error) {
@@ -23,10 +22,13 @@ export const getPostsBySearch = async (req, res) => {
   const { searchQuery, tags } = req.query;
   console.log(searchQuery, tags);
 
+  if (!searchQuery && !tags)
+    return res.status(400).json({ message: 'Failed to search posts. NO searchQuery and tags provided.' });
+
   try {
     const title = new RegExp(searchQuery, "i");
 
-    const posts = await PostMessage.find({ $or: [ { title }, { tags: { $in: tags.split(',') } } ]});
+    const posts = await PostModel.find({ $or: [ { title }, { tags: { $in: tags.split(',') } } ]});
 
     res.json({ data: posts });
   } catch (error) {
@@ -38,7 +40,7 @@ export const getPostsByCreator = async (req, res) => {
   const { name } = req.query;
 
   try {
-    const posts = await PostMessage.find({ name });
+    const posts = await PostModel.find({ name });
 
     res.json({ data: posts });
   } catch (error) {
@@ -54,7 +56,7 @@ export const getPost = async (req, res) => {
       return res.status(404).json({ message: 'Post not found. Invalid ID format.' });
     }
     
-    const post = await PostMessage.findById(id);
+    const post = await PostModel.findById(id);
     
     if (!post) {
       return res.status(404).json({ message: 'Post not found. The post may have been deleted.' });
@@ -68,6 +70,8 @@ export const getPost = async (req, res) => {
 
 export const createPost = async (req, res) => {
   const post = req.body;
+  console.log(req.body);
+  console.log(req.userId);
 
   try {
     // Validate required fields
@@ -79,11 +83,11 @@ export const createPost = async (req, res) => {
       return res.status(400).json({ message: 'Please select an image for your post.' });
     }
 
-    const newPostMessage = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
+    const newPost = new PostModel({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
 
-    await newPostMessage.save();
+    await newPost.save();
 
-    res.status(201).json(newPostMessage);
+    res.status(201).json(newPost);
   } catch (error) {
     res.status(409).json({ message: 'Failed to create post. Please check your input and try again.' });
   }
@@ -98,16 +102,15 @@ export const updatePost = async (req, res) => {
       return res.status(404).json({ message: 'Post not found. Invalid ID format.' });
     }
 
-    // Validate required fields
     if (!title || !message) {
       return res.status(400).json({ message: 'Title and message are required fields.' });
     }
 
     const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
 
-    await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
+    await PostModel.findByIdAndUpdate(id, updatedPost, { new: true });
 
-    res.json(updatedPost);
+    res.json({ data: updatedPost });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update post. Please try again later.' });
   }
@@ -121,12 +124,12 @@ export const deletePost = async (req, res) => {
       return res.status(404).json({ message: 'Post not found. Invalid ID format.' });
     }
 
-    const post = await PostMessage.findById(id);
+    const post = await PostModel.findById(id);
     if (!post) {
       return res.status(404).json({ message: 'Post not found. The post may have been deleted already.' });
     }
 
-    await PostMessage.findByIdAndDelete(id);
+    await PostModel.findByIdAndDelete(id);
 
     res.json({ message: 'Post deleted successfully.' });
   } catch (error) {
@@ -146,7 +149,7 @@ export const likePost = async (req, res) => {
       return res.status(404).json({ message: 'Post not found. Invalid ID format.' });
     }
     
-    const post = await PostMessage.findById(id);
+    const post = await PostModel.findById(id);
     
     if (!post) {
       return res.status(404).json({ message: 'Post not found. The post may have been deleted.' });
@@ -160,9 +163,9 @@ export const likePost = async (req, res) => {
       post.likes = post.likes.filter((id) => id !== String(req.userId));
     }
     
-    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
+    const updatedPost = await PostModel.findByIdAndUpdate(id, post, { new: true });
     
-    res.status(200).json(updatedPost);
+    res.status(200).json({data: updatedPost});
   } catch (error) {
     res.status(500).json({ message: 'Failed to like post. Please try again later.' });
   }
@@ -182,10 +185,10 @@ export const commentPost = async (req, res) => {
     }
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({ message: 'Post not found. Invalid ID format.' });
+      return res.status(404).json({ message: 'Post can not be found. Invalid ID format.' });
     }
     
-    const post = await PostMessage.findById(id);
+    const post = await PostModel.findById(id);
     
     if (!post) {
       return res.status(404).json({ message: 'Post not found. The post may have been deleted.' });
@@ -193,9 +196,9 @@ export const commentPost = async (req, res) => {
 
     post.comments.push(value);
 
-    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
+    const updatedPost = await PostModel.findByIdAndUpdate(id, post, { new: true });
 
-    res.json(updatedPost);
+    res.json({data: updatedPost});
   } catch (error) {
     res.status(500).json({ message: 'Failed to add comment. Please try again later.' });
   }

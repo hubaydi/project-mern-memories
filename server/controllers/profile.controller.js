@@ -36,7 +36,7 @@ export const updateProfile = async (req, res) => {
       { new: true }
     ).select('-password');
 
-    res.status(200).json(updatedProfile);
+    res.status(200).json({ data: updatedProfile });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update profile. Please try again later.' });
   }
@@ -57,7 +57,7 @@ export const uploadProfilePicture = async (req, res) => {
       { new: true }
     ).select('-password');
 
-    res.status(200).json(updatedUser);
+    res.status(200).json({ data: updatedUser });
   } catch (error) {
     res.status(500).json({ message: 'Failed to upload profile picture. Please try again later.' });
   }

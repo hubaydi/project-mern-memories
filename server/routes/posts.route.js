@@ -8,8 +8,9 @@ import {
   createPost, 
   updatePost, likePost, commentPost, deletePost } from '../controllers/posts.controller.js';
 
-const router = express.Router();
 import auth from "../middleware/auth.middleware.js";
+  
+const router = express.Router();
 
 router.route('/')
   .get(getPosts)

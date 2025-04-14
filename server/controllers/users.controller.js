@@ -5,36 +5,33 @@ dotenv.config();
 
 import UserModal from '../models/user.model.js';
 
-const secret = process.env.JWT_SECRET;
+const SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '3d';
 
 export const signin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Input validation
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required." });
     }
 
-    // Find user by email
     const existingUser = await UserModal.findOne({ email });
     
     if (!existingUser) {
       return res.status(404).json({ message: "User doesn't exist. Please check your email or sign up." });
     }
 
-    // Verify password
     const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
     
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials. Please check your password." });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { email: existingUser.email, id: existingUser._id }, 
-      secret, 
-      { expiresIn: "7d" }
+      SECRET, 
+      { expiresIn: JWT_EXPIRES_IN }
     );
     
     res.status(200).json({ result: existingUser, token });
@@ -45,11 +42,10 @@ export const signin = async (req, res) => {
 };
 
 export const signup = async (req, res) => {
-  const { email, password, confirmPassword, firstName, lastName } = req.body;
+  const { firstName, lastName, email, password, confirmPassword } = req.body;
 
   try {
-    // Input validation
-    if (!email || !password || !firstName || !lastName) {
+    if (!firstName || !lastName || !email || !password  ) {
       return res.status(400).json({ message: "All fields are required." });
     }
     
@@ -69,19 +65,19 @@ export const signup = async (req, res) => {
     }
 
     // Hash password and create user
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 10);
     
     const result = await UserModal.create({ 
+      name: `${firstName} ${lastName}` ,
       email, 
-      password: hashedPassword, 
-      name: `${firstName} ${lastName}` 
+      password: hashedPassword
     });
     
     // Generate JWT token
     const token = jwt.sign(
       { email: result.email, id: result._id }, 
-      secret, 
-      { expiresIn: "7d" }
+      SECRET, 
+      { expiresIn: JWT_EXPIRES_IN }
     );
     
     res.status(201).json({ result, token });
