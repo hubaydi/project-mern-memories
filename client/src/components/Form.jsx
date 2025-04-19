@@ -72,7 +72,7 @@ const Form = ({ currentId, setCurrentId }) => {
       if (currentId === 0) {
         await dispatch(addNewPost(formData, navigate));
       } else {
-        await dispatch(updatePost(currentId, formData));
+        await dispatch(updatePost(post._id, formData));
       }
       clear();
     } catch (error) {

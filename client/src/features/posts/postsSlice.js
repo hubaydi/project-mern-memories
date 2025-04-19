@@ -32,6 +32,7 @@ export const updatePost = createAsyncThunk(
   'posts/updatePost',
   async (id, formData) => {
     const response = await api.updatePost(id, formData)
+    console.log(response.data)
     return response.data
   }
 )

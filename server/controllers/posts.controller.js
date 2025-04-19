@@ -76,6 +76,7 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
+
   const post = req.body;
 
   try {
@@ -97,21 +98,24 @@ export const createPost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
   const { id } = req.params;
-  const { title, message, creator, selectedFile, tags } = req.body;
-  
+  const updatedPpost = req.body;
+
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       const error = appError.create('Post not found. Invalid ID format.', 400, FAIL);
       return next(error);
     }
 
-    const updatedPost = { creator, title, message, tags, selectedFile: `/uploads/posts/${req.file.filename}`, _id: id };
+    let updateData = { ...updatedPpost };
 
-    const post = await PostModel.findByIdAndUpdate(id, updatedPost, { new: true });
+    if (req.file) {
+      updateData.selectedFile = `/uploads/posts/${req.file.filename}`;
+    }
 
+    const post = await PostModel.findByIdAndUpdate(id, updateData, { new: true });
     res.status(200).json({ status: SUCCESS, data: { post } });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to update post. Please try again later.' });
+    res.status(500).json({ message: 'Failed to update post. Please try again later.', error });
   }
 };
 

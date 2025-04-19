@@ -32,24 +32,24 @@ const validateSignIn = () => {
   ];
 };
 
-const validatePosts = () => {
-  return [
-    body("title")
-      .notEmpty()
-      .trim()
-      .isLength({ min: 15 })
-      .withMessage("title is required, must be at least 15 characters long"),
-    body("message")
-      .notEmpty()
-      .trim()
-      .isLength({ min: 100 })
-      .withMessage("message is required, must be at least 100 characters long"),
-  ];
-}
+// const validatePosts = () => {
+//   return [
+//     body("title")
+//       .notEmpty()
+//       .trim()
+//       .isLength({ min: 3 })
+//       .withMessage("title is required, must be at least 15 characters long"),
+//     body("message")
+//       .notEmpty()
+//       .trim()
+//       .isLength({ min: 10 })
+//       .withMessage("message is required, must be at least 100 characters long"),
+//   ];
+// }
 
 
 export {
   validateSignUp,
   validateSignIn,
-  validatePosts
+  
 };
