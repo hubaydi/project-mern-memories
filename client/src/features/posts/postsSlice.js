@@ -30,9 +30,8 @@ export const addNewPost = createAsyncThunk(
 
 export const updatePost = createAsyncThunk(
   'posts/updatePost',
-  async (initialPost) => {
-    const { id, ...rest } = initialPost
-    const response = await api.updatePost(id, rest)
+  async (id, formData) => {
+    const response = await api.updatePost(id, formData)
     return response.data
   }
 )
@@ -111,7 +110,6 @@ const postsSlice = createSlice({
       )
       .addCase(addNewPost.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        console.log(action.payload)
           state.posts.push(action.payload.data.post)
         }
       )

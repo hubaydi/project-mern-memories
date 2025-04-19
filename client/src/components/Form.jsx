@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { addNewPost, updatePost } from '../features/posts/PostsSlice';
 
 const Form = ({ currentId, setCurrentId }) => {
-  const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '' });
+  const [postData, setPostData] = useState({ title: '', message: '', tags: [] });
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
@@ -19,7 +21,9 @@ const Form = ({ currentId, setCurrentId }) => {
 
   const clear = () => {
     setCurrentId(0);
-    setPostData({ title: '', message: '', tags: [], selectedFile: '' });
+    setPostData({ title: '', message: '', tags: [] });
+    setSelectedFile(null);
+    setImagePreview(null);
     setErrors({});
     setFormError('');
     setTagInput('');
@@ -41,7 +45,7 @@ const Form = ({ currentId, setCurrentId }) => {
       newErrors.message = 'Message is required';
     }
     
-    if (!postData.selectedFile) {
+    if (!selectedFile) {
       newErrors.selectedFile = 'Please select an image';
     }
     
@@ -58,10 +62,17 @@ const Form = ({ currentId, setCurrentId }) => {
     setFormError('');
     
     try {
+      const formData = new FormData();
+      formData.append('title', postData.title);
+      formData.append('message', postData.message);
+      formData.append('tags', JSON.stringify(postData.tags));
+      formData.append('selectedFile', selectedFile);
+      formData.append('name', user?.result?.name || '');
+      
       if (currentId === 0) {
-        await dispatch(addNewPost({ ...postData, name: user?.result?.name }, navigate));
+        await dispatch(addNewPost(formData, navigate));
       } else {
-        await dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
+        await dispatch(updatePost(currentId, formData));
       }
       clear();
     } catch (error) {
@@ -202,13 +213,21 @@ const Form = ({ currentId, setCurrentId }) => {
           <input
             type="file"
             accept="image/*"
-            
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                setSelectedFile(e.target.files[0]);
+                setImagePreview(URL.createObjectURL(e.target.files[0]));
+              } else {
+                setSelectedFile(null);
+                setImagePreview(null);
+              }
+            }}
           />
           {errors.selectedFile && <p className="text-red-500 text-xs italic mt-1">{errors.selectedFile}</p>}
-          {postData.selectedFile && (
+          {imagePreview && (
             <div className="mt-2">
               <img 
-                src={postData.selectedFile} 
+                src={imagePreview}
                 alt="Preview" 
                 className="max-h-40 rounded shadow-sm" 
               />
