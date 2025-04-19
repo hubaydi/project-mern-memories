@@ -33,6 +33,12 @@ const Navbar = () => {
     }
   }, [user, logout]);
 
+  const profileImg = user?.result?.profilePic
+    ? user?.result?.profilePic.startsWith('http')
+      ? user?.result?.profilePic
+      : 'http://localhost:5000' + user?.result?.profilePic
+    : 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png';
+
   return (
     <nav className="bg-white my-4 px-4 py-4 rounded-md shadow-md"> 
       <div className="container mx-auto flex items-center justify-between"> 
@@ -44,7 +50,7 @@ const Navbar = () => {
         {user?.result ? (
           <div className="flex items-center space-x-2 md:space-x-4">
             <div className="size-6 md:size-10 rounded-full bg-purple-500 text-white flex items-center justify-center uppercase"> 
-              {user?.result.name.charAt(0)}
+              {profileImg}
             </div>
             <Link to={`/profile/${user?.result?._id}`} className="text-gray-800 text-sm md:text-base font-semibold mr-7">{user?.result.name}</Link> 
             <button className="bg-blue-500 hover:bg-blue-400 text-white text-sm font-bold py-2 px-4 rounded" onClick={logout}>Logout</button> 

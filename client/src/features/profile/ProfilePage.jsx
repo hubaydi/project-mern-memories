@@ -91,6 +91,12 @@ const ProfilePage = () => {
     setSnackbarOpen(false);
   };
 
+  const profileImg = profile?.profilePic
+    ? profile?.profilePic.startsWith('http')
+      ? profile?.profilePic
+      : 'http://localhost:5000' + profile?.profilePic
+    : 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png';
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -107,7 +113,7 @@ const ProfilePage = () => {
     <ProfileContainer>
       <ProfileHeader>
         <Avatar
-          src={profile?.profilePic}
+          src={profileImg}
           sx={{ width: 120, height: 120, marginRight: '2rem' }}
         />
         <Box>

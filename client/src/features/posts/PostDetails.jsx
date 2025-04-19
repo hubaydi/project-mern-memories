@@ -34,6 +34,12 @@ const Post = () => {
 
   if (!post) return null;
 
+  const imageUrl = post.selectedFile
+  ? post.selectedFile.startsWith('http')
+    ? post.selectedFile
+    : 'http://localhost:5000' + post.selectedFile
+  : 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png';
+
   const openPost = (_id) => navigate(`/posts/${_id}`);
 
   if (isLoading) {
@@ -61,12 +67,12 @@ const Post = () => {
             <p className="text-gray-500 text-sm">{moment(post.createdAt).fromNow()}</p>
           </div>
           <div className="my-6 flex justify-center">
-          <img
-            className="w-full max-w-xl rounded-md object-cover max-h-96"
-            src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
-            alt={post.title}
-          />
-        </div>
+            <img
+              className="w-full h-full object-cover"
+              src={imageUrl}
+              alt={post.title}
+            />
+          </div>
           <div className="flex flex-wrap gap-2 mb-2">
             {post.tags?.map((tag) => (
               <Link to={`/tags/${tag}`} className="text-[#09abcb] hover:underline text-sm" key={tag}>

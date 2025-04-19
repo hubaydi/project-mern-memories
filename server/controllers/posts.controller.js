@@ -85,7 +85,7 @@ export const createPost = async (req, res) => {
       return next(error);
     }
 
-    const newPost = new PostModel({ ...post, creator: req.userId, selectedFile: req.file.filename, createdAt: new Date().toISOString() });
+    const newPost = new PostModel({ ...post, creator: req.userId, selectedFile: `/uploads/posts/${req.file.filename}` , createdAt: new Date().toISOString() });
 
     await newPost.save();
 
@@ -105,7 +105,7 @@ export const updatePost = async (req, res) => {
       return next(error);
     }
 
-    const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
+    const updatedPost = { creator, title, message, tags, selectedFile: `/uploads/posts/${req.file.filename}`, _id: id };
 
     const post = await PostModel.findByIdAndUpdate(id, updatedPost, { new: true });
 

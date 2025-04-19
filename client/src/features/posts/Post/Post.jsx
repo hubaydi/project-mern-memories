@@ -24,6 +24,13 @@ const Post = ({ postId, setCurrentId }) => {
 
   const userId = user?.result.googleId || user?.result?._id;
   const hasLikedPost = post.likes?.includes(userId);
+  
+  const imageUrl = post.selectedFile
+  ? post.selectedFile.startsWith('http')
+    ? post.selectedFile
+    : 'http://localhost:5000' + post.selectedFile
+  : 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png';
+
 
   const handleLike = async () => {
     //1.optimistic update (immediate ui change)
@@ -87,7 +94,7 @@ const Post = ({ postId, setCurrentId }) => {
       >
         <img
           className="w-full h-full object-cover"
-          src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'}
+          src={imageUrl}
           alt={post.title}
         />
         <div className="overlay absolute left-0 top-0 size-full rounded-[10px]"></div>
