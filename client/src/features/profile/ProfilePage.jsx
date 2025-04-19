@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Typography, Box, Avatar, Button, TextField, Grid, Snackbar, Alert
+  Typography, Box, Avatar, Button, Grid, Snackbar, Alert
 } from '@mui/material';
 import { styled } from '@mui/system';
 import ProfileEditForm from './ProfileEditForm';
 import ProfilePictureUpload from './ProfilePictureUpload';
-import { getProfile, updateProfile, uploadProfilePicture } from '../actions/profile';
+
+import {
+  getProfile,
+  updateProfile,
+  uploadProfilePicture,
+  selectProfile,
+  resetProfile
+} from './profileSlice';
 
 const ProfileContainer = styled(Box)({
   maxWidth: 800,
@@ -22,32 +29,40 @@ const ProfileHeader = styled(Box)({
 });
 
 const ProfilePage = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const profile = useSelector((state) => state.profile.profile);
   const [isEditing, setIsEditing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
+  const { id } = useParams();
+
+  const profile = useSelector(state => state.profile.profile);
+  const loading = useSelector((state) => state.profile.loading);
+  const error = useSelector((state) => state.profile.error);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getProfile(id));
+    return () => {
+      dispatch(resetProfile());
+    };
   }, [dispatch, id]);
 
   const handleEditToggle = () => {
-    setIsEditing(!isEditing);
+    setIsEditing((prev) => !prev);
   };
 
   const handleSave = async (profileData) => {
     try {
-      await dispatch(updateProfile(id, profileData));
+      await dispatch(updateProfile({ id, profileData }));
       setIsEditing(false);
       setSnackbarMessage('Profile updated successfully!');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      setSnackbarMessage(error.message || 'Failed to update profile.');
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setSnackbarMessage(err.error || 'Failed to update profile.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
@@ -55,13 +70,15 @@ const ProfilePage = () => {
 
   const handlePictureUpload = async (file) => {
     try {
-      await dispatch(uploadProfilePicture(id, file));
+      const formData = new FormData();
+      formData.append('profilePic', file);
+      await dispatch(uploadProfilePicture({ id, formData }));
       setSnackbarMessage('Profile picture updated successfully!');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
-    } catch (error) {
-      console.error('Error uploading profile picture:', error);
-      setSnackbarMessage(error.message || 'Failed to upload profile picture.');
+    } catch (err) {
+      console.error('Error uploading profile picture:', err);
+      setSnackbarMessage(err.error || 'Failed to upload profile picture.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
@@ -74,15 +91,23 @@ const ProfilePage = () => {
     setSnackbarOpen(false);
   };
 
-  if (!profile) {
+  if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!profile) {
+    return <div>No profile found.</div>;
   }
 
   return (
     <ProfileContainer>
       <ProfileHeader>
         <Avatar
-          src={profile?.profilePicture}
+          src={profile?.profilePic}
           sx={{ width: 120, height: 120, marginRight: '2rem' }}
         />
         <Box>

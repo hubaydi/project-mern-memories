@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import ThumbUpAltOutlined from '@mui/icons-material/ThumbUpAltOutlined';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
-import { likePost, deletePost } from '../../../actions/posts';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import ThumbUpAltOutlined from '@mui/icons-material/ThumbUpAltOutlined';
 
-const Post = ({ post, setCurrentId }) => {
-  const user = JSON.parse(localStorage.getItem('profile'));
+import { likePost, deletePost } from '../PostsSlice';
+
+import { useSelector } from 'react-redux';
+import { selectPostById } from '../PostsSlice';
+
+const Post = ({ postId, setCurrentId }) => {
+  const post = useSelector((state) => selectPostById(state, postId));
   const [likes, setLikes] = useState([...(post?.likes || [])]);
+
+  const user = JSON.parse(localStorage.getItem('profile'));
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

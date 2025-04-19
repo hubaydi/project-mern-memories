@@ -1,20 +1,16 @@
 import {
   createSlice,
   createAsyncThunk,
-  createSelector,
-  createEntityAdapter
 } from "@reduxjs/toolkit";
 import * as api from "../../api";
 
-const postsAdapter = createEntityAdapter({
-  sortComparer: (a, b) => b.date.localeCompare(a.date)
-})
-
-const initialState = postsAdapter.getInitialState({
+const initialState = {
+  posts: [],
+  currentPage: 1,
+  numberOfPages: 1,
   status: 'idle', //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
-  count: 0
-})
+}
 
 export const getPosts = createAsyncThunk(
   'posts/getPosts',
@@ -83,8 +79,8 @@ export const likePost = createAsyncThunk(
 
 export const commentPost = createAsyncThunk(
   'posts/commentPost',
-  async ({ value, id }) => {
-    const response = await api.comment(value, id)
+  async ({comment, postId}) => {
+    const response = await api.commentPost(comment, postId)
     return response.data
   }
 )
@@ -93,13 +89,6 @@ const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    reactionAdded(state, action) {
-      const { postId, reaction } = action.payload
-      const existingPost = state.entities[postId]
-      if (existingPost) {
-          existingPost.reactions[reaction]++
-      }
-  },
   },
   extraReducers: (builder) => {
     builder
@@ -108,9 +97,11 @@ const postsSlice = createSlice({
       }
       )
       .addCase(getPosts.fulfilled, (state, action) => {
-          state.status = 'succeeded'
-          // Add any fetched posts to the array
-          postsAdapter.upsertMany(state, action.payload)
+        state.status = 'succeeded'
+
+        state.posts = action.payload.data.posts
+        state.currentPage = action.payload.data.currentPage
+        state.numberOfPages = action.payload.data.numberOfPages
         }
       )
       .addCase(getPosts.rejected, (state, action) => {
@@ -119,8 +110,9 @@ const postsSlice = createSlice({
         }
       )
       .addCase(addNewPost.fulfilled, (state, action) => {
-          state.status = 'succeeded'
-          postsAdapter.addOne(state, action.payload)
+        state.status = 'succeeded'
+        console.log(action.payload)
+          state.posts.push(action.payload.data.post)
         }
       )
       .addCase(addNewPost.rejected, (state, action) => {
@@ -134,86 +126,58 @@ const postsSlice = createSlice({
       )
       .addCase(updatePost.fulfilled, (state, action) => {
           state.status = 'succeeded'
-          postsAdapter.updateOne(state, action.payload)
+          state.posts = state.posts.map(post => post._id === action.payload.data.post._id ? action.payload.data.post : post)
         }
       )
       .addCase(deletePost.fulfilled, (state, action) => {
-          if (!action.payload?.id) {
+          if (!action.payload?.data._id) {
             console.log('Delete could not complete')
             console.log(action.payload)
             state.status = 'failed'
             return;
         }
           state.status = 'succeeded'
-          postsAdapter.removeOne(state, action.payload.id)
+          state.posts = state.posts.filter(post => post._id !== action.payload.data._id)
         }
     )
       
       
     .addCase(getPostsBySearch.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        postsAdapter.upsertMany(state, action.payload)
+        state.posts = action.payload.data.posts
       }
     )
     .addCase(getPostsByCreator.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        postsAdapter.upsertMany(state, action.payload)
+        state.posts = action.payload.data.posts
       }
     )
     .addCase(getPost.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        postsAdapter.upsertOne(state, action.payload)
+        state.posts = [action.payload.data.post]
       }
     )
     .addCase(likePost.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        postsAdapter.upsertOne(state, action.payload)
+        state.posts = state.posts.map(post => post._id === action.payload.data.post._id ? action.payload.data.post : post)
       }
     )
     .addCase(commentPost.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        postsAdapter.upsertOne(state, action.payload)
+        state.posts = state.posts.map(post => post._id === action.payload.data.post._id ? action.payload.data.post : post)
       }
     )
   }
 })
 
-
-export const {
-  selectAll: selectAllPosts,
-  selectById: selectPostById,
-  selectIds: selectPostIds
-} = postsAdapter.getSelectors(state => state.posts)
-
+export const selectAllPosts = (state) => state.posts?.posts;
 export const getPostsStatus = (state) => state.posts.status;
 export const getPostsError = (state) => state.posts.error;
 
-export const selectPostsByUser = createSelector(
-  [selectAllPosts, (state, userId) => userId],
-  (posts, userId) => posts.filter(post => post.creator === userId)
-)
+export const selectPostById = (state, postId) => state.posts.posts.find(post => post._id === postId)
+export const selectPostsByCreator = (state, userId) => state.posts.posts.filter(post => post.creator === userId)
 
-export const selectPostsBySearch = createSelector(
-  [selectAllPosts, (state, searchQuery) => searchQuery],
-  (posts, searchQuery) => {
-    if (!searchQuery) return posts
-    return posts.filter(post => post.title.includes(searchQuery) || post.tags.includes(searchQuery))
-  }
-)
 
-export const selectPostsByTag = createSelector(
-  [selectAllPosts, (state, tag) => tag],
-  (posts, tag) => {
-    if (!tag) return posts
-    return posts.filter(post => post.tags.includes(tag))
-  }
-)
-export const selectPostsByDate = createSelector(
-  [selectAllPosts],
-  (posts) => {
-    return posts.slice().sort((a, b) => new Date(b.date) - new Date(a.date))
-  }
-)
+export const { reactionAdded } = postsSlice.actions
 
 export default postsSlice.reducer
-export const { reactionAdded } = postsSlice.actions

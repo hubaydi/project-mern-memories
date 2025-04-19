@@ -1,20 +1,24 @@
-import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { commentPost } from '../actions/posts';
+import { commentPost } from '../features/posts/PostsSlice'; 
+import { selectUser } from '../features/users/usersSlice';
 
-const CommentSection = ({ post }) => {
-  const user = JSON.parse(localStorage.getItem('profile'));
+const CommentSection = ({ postId }) => {
+  const post = useSelector(state => state.posts.posts.find(post => post._id === postId))
+  const user = useSelector(selectUser);
+
   const [comment, setComment] = useState('');
-  const dispatch = useDispatch();
   const [comments, setComments] = useState(post?.comments);
+
+  const dispatch = useDispatch();
   const commentsRef = useRef();
 
   const handleComment = async () => {
-    const newComments = await dispatch(commentPost(`${user?.result?.name}: ${comment}`, post._id));
+    const commentedPost = await dispatch(commentPost({comment: `${user?.result?.name}: ${comment}`, postId: post._id}));
 
     setComment('');
-    setComments(newComments);
+    setComments(commentedPost.payload.data.post.comments);
 
     commentsRef.current.scrollIntoView({ behavior: 'smooth' });
   };
@@ -46,7 +50,7 @@ const CommentSection = ({ post }) => {
           {comments?.map((c, i) => (
             <div className='flex gap-2 items-start m-2 bg-gray-100 p-2 rounded-lg' key={i}>  
               <img src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80" className='size-10 rounded-full border-2 border-green' alt="" />
-              <div div className="mb-1 flex flex-col">
+              <div className="mb-1 flex flex-col">
               <span className='font-bold'>{c.split(': ')[0]}</span>
               {c.split(':')[1]}
               </div>

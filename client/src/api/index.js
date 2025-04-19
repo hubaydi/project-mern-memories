@@ -42,54 +42,33 @@ API.interceptors.request.use((req) => {
   return Promise.reject(error);
 });
 
-// Response interceptor
-API.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const originalRequest = error.config;
-    
-    // Handle network errors
-    if (error.message === 'Network Error') {
-      console.error('Network error - please check your connection');
-    }
-    
-    // Handle timeout errors
-    if (error.code === 'ECONNABORTED') {
-      console.error('Request timed out - please try again');
-    }
 
-    // Handle authentication errors
-    if (error.response?.status === 401) {
-      console.error('Authentication error - please login again');
-      localStorage.removeItem('profile');
-      window.location.href = '/auth';
-    }
-
-    // Handle server errors
-    if (error.response?.status >= 500) {
-      console.error('Server error - please try again later');
-    }
-
-    return Promise.reject(error);
-  }
-);
-
-export const fetchPost = (id) => API.get(`/posts/${id}`);
 export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
+export const fetchPost = (id) => API.get(`/posts/${id}`);
+export const createPost = (newPost) => API.post('/posts', newPost, {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+});
+export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost, {
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+});
+export const deletePost = (id) => API.delete(`/posts/${id}`);
+
+export const likePost = (id) => API.patch(`/posts/${id}/like-post`);
+export const commentPost = (comment, postId) => API.post(`/posts/${postId}/comment-post`, { value: comment });
+
 export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
 export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
-export const createPost = (newPost) => API.post('/posts', newPost);
-export const likePost = (id) => API.patch(`/posts/${id}/like-post`);
-export const comment = (value, id) => API.post(`/posts/${id}/comment-post`, { value });
-export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
-export const deletePost = (id) => API.delete(`/posts/${id}`);
 
 export const signIn = (formData) => API.post('/users/sign-in', formData);
 export const signUp = (formData) => API.post('/users/sign-up', formData);
 
 export const fetchProfile = (id) => API.get(`/profile/${id}`);
-export const updateProfile = (id, profileData) => API.patch(`/profile/${id}`, profileData);
-export const uploadProfilePicture = (id, formData) => API.post(`/profile/${id}/upload`, formData, {
+export const updateProfile = (id, profileData) => API.patch(`/profile/update/${id}`, profileData);
+export const uploadProfilePicture = (id, formData) => API.patch(`/profile/upload/${id}`, formData, {
   headers: {
     'Content-Type': 'multipart/form-data'
   }

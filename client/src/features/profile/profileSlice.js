@@ -1,21 +1,15 @@
 import {
   createSlice,
   createAsyncThunk,
-  createSelector,
-  createEntityAdapter
 } from "@reduxjs/toolkit";
 import * as api from "../../api";
 
-const profileAdapter = createEntityAdapter({
-  selectId: (profile) => profile._id,
-});
-
-export const fetchProfile = createAsyncThunk(
-  "profile/fetchProfile",
+export const getProfile = createAsyncThunk(
+  "profile/getProfile",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await api.fetchProfile(id);
-      return data;
+      const { data: { data } } = await api.fetchProfile(id);
+      return data.profile;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -26,8 +20,8 @@ export const updateProfile = createAsyncThunk(
   "profile/updateProfile",
   async ({ id, profileData }, { rejectWithValue }) => {
     try {
-      const { data } = await api.updateProfile(id, profileData);
-      return data;
+      const { data: { data } } = await api.updateProfile(id, profileData);
+      return data.profile;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
@@ -38,39 +32,41 @@ export const uploadProfilePicture = createAsyncThunk(
   "profile/uploadProfilePicture",
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const { data } = await api.uploadProfilePicture(id, formData);
-      return data;
+      const { data: { data: { profile } } } = await api.uploadProfilePicture(id, formData);
+      return profile;
     } catch (err) {
       return rejectWithValue(err.response.data);
     }
   }
 );
 
-const initialState = profileAdapter.getInitialState({
+const initialState = {
+  profile: null,
   loading: false,
   error: null,
-});
+};
+
 const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
     resetProfile: (state) => {
-      profileAdapter.removeAll(state);
+      state.profile = null;
       state.loading = false;
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProfile.pending, (state) => {
+      .addCase(getProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchProfile.fulfilled, (state, action) => {
-        profileAdapter.setOne(state, action.payload);
+      .addCase(getProfile.fulfilled, (state, action) => {
+        state.profile = action.payload;
         state.loading = false;
       })
-      .addCase(fetchProfile.rejected, (state, action) => {
+      .addCase(getProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -79,10 +75,7 @@ const profileSlice = createSlice({
         state.error = null;
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        profileAdapter.updateOne(state, {
-          id: action.payload._id,
-          changes: action.payload,
-        });
+        state.profile = action.payload;
         state.loading = false;
       })
       .addCase(updateProfile.rejected, (state, action) => {
@@ -94,10 +87,7 @@ const profileSlice = createSlice({
         state.error = null;
       })
       .addCase(uploadProfilePicture.fulfilled, (state, action) => {
-        profileAdapter.updateOne(state, {
-          id: action.payload._id,
-          changes: action.payload,
-        });
+        state.profile = action.payload;
         state.loading = false;
       })
       .addCase(uploadProfilePicture.rejected, (state, action) => {
@@ -109,7 +99,7 @@ const profileSlice = createSlice({
 
 export const { resetProfile } = profileSlice.actions;
 export const selectProfileState = (state) => state.profile;
-export const selectProfile = (state, id) => profileAdapter.getSelectors(selectProfileState).selectById(state.profile, id);
+export const selectProfile = (state, id) => state.profile.profile?.find((profile) => profile._id === id);
 
 export default profileSlice.reducer;
 

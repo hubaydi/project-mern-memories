@@ -7,6 +7,7 @@ import postRouter from './routes/posts.route.js';
 import userRouter from "./routes/users.route.js";
 import profileRouter from "./routes/profile.route.js";
 
+import { ERROR } from './utils/constants.js';
 // Load environment variables
 dotenv.config();
 
@@ -27,6 +28,16 @@ app.use("/api/v1/profile", profileRouter);
 // Database connection
 const CONNECTION_URL = process.env.MONGODB_URI;
 const PORT = process.env.PORT;
+
+
+// Global middleware for handling invalid routes, i.e., routes that are not defined
+app.all('*', (req, res) => {
+  res.status(404).json({ status: ERROR, message: 'Resource not found ==> invalid route' });
+});
+// Global error handler middleware
+app.use((error, req, res, next) => {
+  res.status(error.statusCode || 500).json({ status: error.statusText || ERROR, message: error.message, code: error.statusCode });
+});
 
 // Connect to MongoDB using Mongoose 8+ syntax
 mongoose.connect(CONNECTION_URL)

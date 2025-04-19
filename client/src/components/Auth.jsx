@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { jwtDecode } from 'jwt-decode';
 
 import Icon from './icon';
-import { signin, signup } from '../actions/auth';
+import { signIn, signUp, selectUserStatus, selectUserError } from '../features/users/UsersSlice';
 import { AUTH } from '../constants/actionTypes';
-// import useStyles from './styles'; // Remove useStyles
 import Input from './Input';
 
 const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' };
@@ -15,14 +14,16 @@ const initialState = { firstName: '', lastName: '', email: '', password: '', con
 const SignUp = () => {
   const [form, setForm] = useState(initialState);
   const [isSignup, setIsSignup] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  // const styles = useStyles(); // Remove styles
-
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
+  
+  const userStatus = useSelector(selectUserStatus);
+  const userError = useSelector(selectUserError);
+  
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
 
   const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
 
@@ -72,32 +73,35 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
-    setIsSubmitting(true);
-    setFormError('');
-    
-    try {
-      if (isSignup) {
-        await dispatch(signup(form, navigate));
-      } else {
-        await dispatch(signin(form, navigate));
-      }
-    } catch (error) {
-      setFormError(
-        error?.response?.data?.message || 
-        'An error occurred. Please try again.'
-      );
-    } finally {
-      setIsSubmitting(false);
+
+    if (isSignup) {
+      dispatch(signUp(form))
+        .unwrap()
+        .then(() => {
+          navigate('/');
+        })
+        .catch((error) => {
+          console.error("Sign-up failed:", error);
+          setFormError('Sign-up failed. Please try again.');
+        });
+    } else {
+      dispatch(signIn(form))
+        .unwrap()
+        .then(() => {
+          navigate('/');
+        })
+        .catch((error) => {
+          console.error("Sign-in failed:", error);
+          setFormError('Sign-in failed. Please try again.');
+        });
     }
   };
 
   const googleSuccess = async (res) => {
     try {
       const token = res?.credential;
-      // Using jwt-decode v4 syntax
       const decodedToken = token ? jwtDecode(token) : null;
       const result = {
         _id: decodedToken?.sub,
@@ -121,7 +125,6 @@ const SignUp = () => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    // Clear error for this field when user starts typing
     if (errors[e.target.name]) {
       setErrors({
         ...errors,
@@ -197,18 +200,18 @@ const SignUp = () => {
               }
             </div>
             <button 
-              className={`bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mt-4 cursor-pointer ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`} 
+              className={`bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mt-4 cursor-pointer ${userStatus === 'loading' ? 'opacity-50 cursor-not-allowed' : ''}`} 
               type="submit"
-              disabled={isSubmitting}
+              disabled={userStatus === 'loading'}
             >
-              { isSubmitting ? 'Processing...' : (isSignup ? 'Sign Up' : 'Sign In') }
+              { userStatus === 'loading' ? 'Processing...' : (isSignup ? 'Sign Up' : 'Sign In') }
             </button>
             <div className="flex justify-center mt-4">
               <button 
                 type="button"
                 className="text-sm text-gray-500 hover:text-blue-500" 
                 onClick={switchMode}
-                disabled={isSubmitting}
+                disabled={userStatus === 'loading'}
               >
                 { isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up" }
               </button>

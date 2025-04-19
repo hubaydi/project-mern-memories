@@ -41,7 +41,7 @@ const upload = multer({ storage: storage, fileFilter })
 
 // Profile routes
 router.get('/:id', getProfile);
-router.patch('/update/:id', auth, upload.single('profilePic'), updateProfile);
+router.patch('/update/:id', auth, updateProfile);
 router.patch('/upload/:id', auth, upload.single('profilePic'), uploadProfilePicture);
 
 export default router;

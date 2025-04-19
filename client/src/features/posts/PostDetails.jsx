@@ -2,14 +2,17 @@ import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getPost, getPostsBySearch } from '../actions/posts';
-import CommentSection from './CommentSection';
+import { getPost, getPostsBySearch, selectAllPosts, selectPostById } from './PostsSlice';
+import CommentSection from '../../components/CommentSection';
 
 const Post = () => {
-  const { post, posts, isLoading } = useSelector((state) => state.posts);
+  const { id } = useParams();
+  const posts = useSelector(selectAllPosts);
+  const post = useSelector(state => state.posts.posts.find(post => post._id === id));
+  const isLoading = useSelector((state) => state.posts.status === 'loading');
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,7 +79,7 @@ const Post = () => {
           {/* <p className="text-gray-700 font-semibold">Realtime Chat - coming soon!</p> */}
           {/* <hr className="my-5 border-gray-200" /> */}
           <div className="mt-4">
-            <CommentSection post={post} />
+            <CommentSection postId={post._id} />
           </div>
           <hr className="my-5 border-gray-200" />
         </div>

@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
-// import { Container, Grow, Grid, AppBar, TextField, Button, Paper, Chip, Box } from '@mui/material'; // Remove MUI imports
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { getPostsBySearch } from '../actions/posts';
-import Posts from './Posts/Posts';
+import Posts from '../features/posts/Posts';
 import Form from './Form';
 import Pagination from './Pagination';
+import { getPostsBySearch } from '../features/posts/PostsSlice';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
 const Home = () => {
+  const [search, setSearch] = useState('');
+  const [tags, setTags] = useState([]);
+
   const query = useQuery();
   const page = query.get('page') || 1;
   const searchQuery = query.get('searchQuery');
 
   const [currentId, setCurrentId] = useState(0);
   const dispatch = useDispatch();
-
-  const [search, setSearch] = useState('');
-  const [tags, setTags] = useState([]);
   const navigate = useNavigate();
 
   const searchPost = () => {
@@ -48,14 +47,14 @@ const Home = () => {
   };
 
   return (
-    <div className="grow mt-10"> {/* Replace Grow with div and add Tailwind class */}
-        <div className="flex flex-col items-center md:flex-row justify-between md:items-start space-x-2"> {/* Replace Grid with div and add Tailwind classes */}
-          <div className="w-full md:w-3/4 pt-10 md:pt-0"> {/* Replace Grid with div and add Tailwind classes */}
-            <Posts setCurrentId={setCurrentId} />
+    <div className="grow mt-10">
+        <div className="flex flex-col items-center md:flex-row justify-between md:items-start space-x-2">
+          <div className="w-full md:w-3/4 pt-10 md:pt-0">
+            <Posts setCurrentId={setCurrentId}/>
           </div>
-          <div className="w-full min-w-[250px] sm:w-2/3 md:w-1/4 -order-1 mr-4"> {/* Replace Grid with div and add Tailwind classes */}
-            <div className="bg-white p-4 rounded shadow-md"> {/* Replace AppBar with div and add Tailwind classes */}
-              <input /* Replace TextField with input and add Tailwind classes */
+          <div className="w-full min-w-[250px] sm:w-2/3 md:w-1/4 -order-1 mr-4">
+            <div className="bg-white p-4 rounded shadow-md">
+              <input
                 type="text"
                 placeholder="Search Memories"
                 className="w-full border rounded py-2 px-3 mb-2"
@@ -64,9 +63,9 @@ const Home = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <div className="my-2 flex flex-wrap"> {/* Replace Box with div and add Tailwind classes */}
+              <div className="my-2 flex flex-wrap">
                 {tags.map((tag) => (
-                  <div /* Replace Chip with div and add Tailwind classes */
+                  <div
                     key={tag}
                     className="bg-blue-500 text-white rounded-full px-2 py-1 m-1 text-sm"
                   >
@@ -76,7 +75,7 @@ const Home = () => {
                     </button>
                   </div>
                 ))}
-                <input /* Replace TextField with input and add Tailwind classes */
+                <input
                   type="text"
                   placeholder="Search Tags"
                   className="w-full border rounded py-2 px-3"
@@ -88,7 +87,7 @@ const Home = () => {
                   }}
                 />
               </div>
-              <button /* Replace Button with button and add Tailwind classes */
+              <button
                 onClick={searchPost}
                 className="bg-blue-700 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full cursor-pointer"
               >
@@ -97,7 +96,7 @@ const Home = () => {
             </div>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
             {(!searchQuery && !tags.length) && (
-              <div className="bg-white p-4 rounded shadow my-4"> {/* Replace Paper with div and add Tailwind classes */}
+              <div className="bg-white p-4 rounded shadow my-4">
                 <Pagination page={page} />
               </div>
             )}

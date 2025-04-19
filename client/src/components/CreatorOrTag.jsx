@@ -3,8 +3,8 @@ import { useParams, useLocation } from 'react-router-dom';
 // import { Typography, CircularProgress, Grid, Divider, Box } from '@mui/material'; // Remove MUI imports
 import { useDispatch, useSelector } from 'react-redux';
 
-import Post from './Posts/Post/Post';
-import { getPostsByCreator, getPostsBySearch } from '../actions/posts';
+import Post from '../features/posts/Post/Post';
+import { getPostsByCreator, getPostsBySearch } from '../features/posts/PostsSlice';
 
 const CreatorOrTag = () => {
   const { name } = useParams();

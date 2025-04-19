@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-// import { TextField, Button, Typography, Paper, Box, Autocomplete } from '@mui/material'; // Remove MUI imports
 import { useDispatch, useSelector } from 'react-redux';
-import FileBase from 'react-file-base64';
 import { useNavigate } from 'react-router-dom';
 
-import { createPost, updatePost } from '../actions/posts';
-// import useStyles from './styles'; // Remove useStyles
+import { addNewPost, updatePost } from '../features/posts/PostsSlice';
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({ title: '', message: '', tags: [], selectedFile: '' });
@@ -15,9 +12,9 @@ const Form = ({ currentId, setCurrentId }) => {
   const [tagInput, setTagInput] = useState('');
   
   const post = useSelector((state) => (currentId ? state.posts.posts.find((message) => message._id === currentId) : null));
-  const dispatch = useDispatch();
-  // const styles = useStyles(); // Remove useStyles
   const user = JSON.parse(localStorage.getItem('profile'));
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const clear = () => {
@@ -62,7 +59,7 @@ const Form = ({ currentId, setCurrentId }) => {
     
     try {
       if (currentId === 0) {
-        await dispatch(createPost({ ...postData, name: user?.result?.name }, navigate));
+        await dispatch(addNewPost({ ...postData, name: user?.result?.name }, navigate));
       } else {
         await dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
       }
@@ -118,13 +115,13 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6"> {/* Replace Paper with div and add Tailwind classes */}
+    <div className="bg-white rounded-lg shadow-md p-6"> 
       <form
         autoComplete="off"
         noValidate
         onSubmit={handleSubmit}
       >
-        <h6 className="text-lg font-bold mb-4">{currentId ? `Editing "${post?.title}"` : 'Creating a Memory'}</h6> {/* Replace Typography with h6 and add Tailwind classes */}
+        <h6 className="text-lg font-bold mb-4">{currentId ? `Editing "${post?.title}"` : 'Creating a Memory'}</h6> 
         
         {formError && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
@@ -159,7 +156,7 @@ const Form = ({ currentId, setCurrentId }) => {
           {errors.message && <p className="text-red-500 text-xs italic mt-1">{errors.message}</p>}
         </div>
         
-        <div className="mb-4"> {/* Replace Box with div and add Tailwind classes */}
+        <div className="mb-4"> 
           <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
           <div className="flex flex-wrap gap-1 mb-2">
             {postData.tags.map((tag) => (
@@ -200,20 +197,12 @@ const Form = ({ currentId, setCurrentId }) => {
           </div>
         </div>
         
-        <div className="mb-4"> {/* Replace Box with div and add Tailwind classes */}
+        <div className="mb-4"> 
           <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
-          <FileBase
+          <input
             type="file"
-            multiple={false}
-            onDone={({ base64 }) => {
-              setPostData({ ...postData, selectedFile: base64 });
-              if (errors.selectedFile) {
-                setErrors({
-                  ...errors,
-                  selectedFile: ''
-                });
-              }
-            }}
+            accept="image/*"
+            
           />
           {errors.selectedFile && <p className="text-red-500 text-xs italic mt-1">{errors.selectedFile}</p>}
           {postData.selectedFile && (
@@ -227,14 +216,14 @@ const Form = ({ currentId, setCurrentId }) => {
           )}
         </div>
         
-        <button /* Replace Button with button and add Tailwind classes */
+        <button 
           className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mb-2 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''} cursor-pointer`}
           type="submit"
           disabled={isSubmitting}
         >
           {isSubmitting ? 'Submitting...' : 'Submit'}
         </button>
-        <button /* Replace Button with button and add Tailwind classes */
+        <button 
           className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded w-full cursor-pointer"
           type="button"
           onClick={clear}

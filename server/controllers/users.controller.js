@@ -5,6 +5,9 @@ dotenv.config();
 
 import UserModal from '../models/user.model.js';
 
+import { SUCCESS, FAIL } from '../utils/constants.js';
+import appError from '../utils/appError.js';
+
 const SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '3d';
 
@@ -12,20 +15,19 @@ export const signin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required." });
-    }
 
     const existingUser = await UserModal.findOne({ email });
     
     if (!existingUser) {
-      return res.status(404).json({ message: "User doesn't exist. Please check your email or sign up." });
+      const error = appError.create('User not found. Please sign up.', 404, FAIL);
+      return next(error);
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
     
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Invalid credentials. Please check your password." });
+      const error = appError.create('Invalid credentials. Please try again.', 401, FAIL);
+      return next(error);
     }
 
     const token = jwt.sign(
@@ -34,10 +36,10 @@ export const signin = async (req, res) => {
       { expiresIn: JWT_EXPIRES_IN }
     );
     
-    res.status(200).json({ result: existingUser, token });
+    res.status(200).json({ status: SUCCESS, data: {result: existingUser, token } });
   } catch (error) {
     console.error("Sign in error:", error);
-    res.status(500).json({ message: "Something went wrong. Please try again later." });
+    res.status(500).json({ status: FAIL, message: "Something went wrong. Please try again later." });
   }
 };
 
@@ -45,23 +47,17 @@ export const signup = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
 
   try {
-    if (!firstName || !lastName || !email || !password  ) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
-    
     if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Passwords don't match." });
-    }
-    
-    if (password.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters long." });
-    }
+      const error = appError.create('Passwords do not match. Please try again.', 400, FAIL);
+      return next(error);
+      }
 
     // Check if user already exists
     const existingUser = await UserModal.findOne({ email });
     
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists. Please sign in instead." });
+      const error = appError.create('User already exists. Please login.', 400, FAIL);
+      return next(error);
     }
 
     // Hash password and create user
@@ -80,9 +76,13 @@ export const signup = async (req, res) => {
       { expiresIn: JWT_EXPIRES_IN }
     );
     
-    res.status(201).json({ result, token });
+    res.status(201).json({
+      status: SUCCESS,
+      data: { result, token },
+      message: 'User registered successfully.'
+    });
   } catch (error) {
     console.error("Sign up error:", error);
-    res.status(500).json({ message: "Something went wrong. Please try again later." });
+    res.status(500).json({status: FAIL, message: "Something went wrong. Please try again later." });
   }
 };
