@@ -12,6 +12,7 @@ import {
   updatePost, likePost, commentPost, deletePost } from '../controllers/posts.controller.js';
 
 import auth from "../middleware/auth.middleware.js";
+import { validatePosts } from '../middleware/validationSchema.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,11 +44,11 @@ const upload = multer({ storage: storage, fileFilter })
 
 router.route('/')
   .get(getPosts)
-  .post(auth, upload.single('selectedFile'), createPost);
+  .post(auth, validatePosts(), upload.single('selectedFile'), createPost);
 
 router.route('/:id')
   .get(getPost)
-  .patch(auth, upload.single('selectedFile'), updatePost)
+  .patch(auth, validatePosts(), upload.single('selectedFile'), updatePost)
   .delete(auth, deletePost);
   
 router.patch('/:id/like-post', auth, likePost);

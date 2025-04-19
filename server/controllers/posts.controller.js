@@ -79,10 +79,6 @@ export const createPost = async (req, res) => {
   const post = req.body;
 
   try {
-    if (!post.title || !post.message) {
-      const error = appError.create('Title and message are required fields.', 400, FAIL);
-      return next(error);
-    }
     
     if (!req.file) {
       const error = appError.create('Image file is required.', 400, FAIL);

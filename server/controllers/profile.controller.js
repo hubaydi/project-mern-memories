@@ -66,7 +66,7 @@ export const uploadProfilePicture = async (req, res) => {
 
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { profilePic: file.path },
+      { profilePic: file.filename },
       { new: true }
     ).select('-password');
 
