@@ -26,7 +26,7 @@ const Post = () => {
       }
     };
     fetchData();
-  }, [post?.tags]);
+  }, [id]);
 
   const recommendedPosts = useMemo(() => {
     return posts.filter(({ _id }) => _id !== post?._id);
