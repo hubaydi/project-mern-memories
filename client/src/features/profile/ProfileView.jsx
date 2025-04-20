@@ -1,54 +1,51 @@
 import React from 'react';
-import { Box, Typography, Button, Avatar } from '@mui/material';
 
 const ProfileView = ({ profile, onEditClick }) => {
   return (
-    <Box sx={{ mt: 3 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <Avatar
+    <div className="mt-6">
+      <div className="flex items-center mb-8">
+        <img
           src={profile.profilePicture}
-          sx={{ width: 120, height: 120, mr: 3 }}
+          alt="Profile"
+          className="w-28 h-28 rounded-full object-cover mr-8 border-4 border-blue-200"
         />
-        <Box>
-          <Typography variant="h4">{profile.name}</Typography>
-          <Typography variant="subtitle1">{profile.email}</Typography>
-        </Box>
-      </Box>
+        <div>
+          <h1 className="text-3xl font-bold">{profile.name}</h1>
+          <p className="text-gray-600">{profile.email}</p>
+        </div>
+      </div>
       {profile.bio && (
-        <Typography variant="body1" paragraph>
-          {profile.bio}
-        </Typography>
+        <p className="text-gray-800 mb-4 whitespace-pre-line">{profile.bio}</p>
       )}
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+      <div className="flex gap-2 flex-wrap mt-4 mb-4">
         {profile.website && (
-          <Button variant="outlined" href={profile.website} target="_blank">
+          <a href={profile.website} target="_blank" rel="noopener noreferrer" className="border border-blue-400 text-blue-600 px-4 py-1 rounded hover:bg-blue-50 transition">
             Website
-          </Button>
+          </a>
         )}
         {profile.twitter && (
-          <Button variant="outlined" href={`https://twitter.com/${profile.twitter}`} target="_blank">
+          <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noopener noreferrer" className="border border-blue-400 text-blue-600 px-4 py-1 rounded hover:bg-blue-50 transition">
             Twitter
-          </Button>
+          </a>
         )}
         {profile.instagram && (
-          <Button variant="outlined" href={`https://instagram.com/${profile.instagram}`} target="_blank">
+          <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer" className="border border-blue-400 text-blue-600 px-4 py-1 rounded hover:bg-blue-50 transition">
             Instagram
-          </Button>
+          </a>
         )}
         {profile.facebook && (
-          <Button variant="outlined" href={`https://facebook.com/${profile.facebook}`} target="_blank">
+          <a href={`https://facebook.com/${profile.facebook}`} target="_blank" rel="noopener noreferrer" className="border border-blue-400 text-blue-600 px-4 py-1 rounded hover:bg-blue-50 transition">
             Facebook
-          </Button>
+          </a>
         )}
-      </Box>
-      <Button
-        variant="contained"
+      </div>
+      <button
         onClick={onEditClick}
-        sx={{ mt: 3 }}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded mt-3 font-semibold transition"
       >
         Edit Profile
-      </Button>
-    </Box>
+      </button>
+    </div>
   );
 };
 

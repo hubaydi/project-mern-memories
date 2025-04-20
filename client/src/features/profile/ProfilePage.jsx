@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Typography, Box, Avatar, Button, Grid, Snackbar, Alert
-} from '@mui/material';
-import { styled } from '@mui/system';
 import ProfileEditForm from './ProfileEditForm';
 import ProfilePictureUpload from './ProfilePictureUpload';
 
@@ -15,18 +11,6 @@ import {
   selectProfile,
   resetProfile
 } from './profileSlice';
-
-const ProfileContainer = styled(Box)({
-  maxWidth: 800,
-  margin: '0 auto',
-  padding: '2rem',
-});
-
-const ProfileHeader = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  marginBottom: '2rem',
-});
 
 const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -110,64 +94,62 @@ const ProfilePage = () => {
   }
 
   return (
-    <ProfileContainer>
-      <ProfileHeader>
-        <Avatar
+    <div className="max-w-3xl mx-auto p-8 bg-white shadow rounded-lg">
+      <div className="flex items-center mb-8">
+        <img
           src={profileImg}
-          sx={{ width: 120, height: 120, marginRight: '2rem' }}
+          alt="Profile"
+          className="w-28 h-28 rounded-full object-cover mr-8 border-4 border-blue-200"
         />
-        <Box>
-          <Typography variant="h4">{profile?.name}</Typography>
-          <Typography variant="subtitle1">{profile?.email}</Typography>
+        <div>
+          <h1 className="text-3xl font-bold">{profile?.name}</h1>
+          <p className="text-gray-600">{profile?.email}</p>
           <ProfilePictureUpload onUpload={handlePictureUpload} />
-        </Box>
-      </ProfileHeader>
-
+        </div>
+      </div>
       {isEditing ? (
         <ProfileEditForm profile={profile} onSave={handleSave} />
       ) : (
-        <Box>
-          <Typography variant="body1" paragraph>
-            {profile?.bio}
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+        <div>
+          <p className="text-gray-800 mb-4 whitespace-pre-line">{profile?.bio}</p>
+          <div className="flex gap-2 flex-wrap mb-4">
             {profile?.website && (
-              <Button variant="outlined" href={profile?.website} target="_blank">
+              <a href={profile?.website} target="_blank" rel="noopener noreferrer" className="border border-blue-400 text-blue-600 px-4 py-1 rounded hover:bg-blue-50 transition">
                 Website
-              </Button>
+              </a>
             )}
             {profile?.twitter && (
-              <Button variant="outlined" href={`https://twitter.com/${profile?.twitter}`} target="_blank">
+              <a href={`https://twitter.com/${profile?.twitter}`} target="_blank" rel="noopener noreferrer" className="border border-blue-400 text-blue-600 px-4 py-1 rounded hover:bg-blue-50 transition">
                 Twitter
-              </Button>
+              </a>
             )}
             {profile?.instagram && (
-              <Button variant="outlined" href={`https://instagram.com/${profile?.instagram}`} target="_blank">
+              <a href={`https://instagram.com/${profile?.instagram}`} target="_blank" rel="noopener noreferrer" className="border border-blue-400 text-blue-600 px-4 py-1 rounded hover:bg-blue-50 transition">
                 Instagram
-              </Button>
+              </a>
             )}
             {profile?.facebook && (
-              <Button variant="outlined" href={`https://facebook.com/${profile?.facebook}`} target="_blank">
+              <a href={`https://facebook.com/${profile?.facebook}`} target="_blank" rel="noopener noreferrer" className="border border-blue-400 text-blue-600 px-4 py-1 rounded hover:bg-blue-50 transition">
                 Facebook
-              </Button>
+              </a>
             )}
-          </Box>
-          <Button variant="contained" onClick={handleEditToggle} sx={{ mt: 3 }}>
+          </div>
+          <button
+            onClick={handleEditToggle}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded mt-3 font-semibold transition"
+          >
             Edit Profile
-          </Button>
-        </Box>
+          </button>
+        </div>
       )}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </ProfileContainer>
+      {/* Snackbar replacement */}
+      {snackbarOpen && (
+        <div className={`fixed bottom-6 right-6 z-50 min-w-[240px] flex items-center px-4 py-3 rounded shadow-lg transition-all ${snackbarSeverity === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+          <span className="flex-1">{snackbarMessage}</span>
+          <button onClick={handleSnackbarClose} className="ml-4 text-white font-bold">&times;</button>
+        </div>
+      )}
+    </div>
   );
 };
 

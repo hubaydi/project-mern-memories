@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Button, Typography } from '@mui/material';
 
 const ProfileEditForm = ({ profile, onSave }) => {
   const [formData, setFormData] = useState(profile);
@@ -57,63 +56,72 @@ const ProfileEditForm = ({ profile, onSave }) => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-      <TextField
-        fullWidth
-        label="Bio"
-        name="bio"
-        value={formData?.bio || ''}
-        onChange={handleChange}
-        margin="normal"
-        multiline
-        rows={4}
-      />
-      <TextField
-        fullWidth
-        label="Website"
-        name="website"
-        value={formData?.website || ''}
-        onChange={handleChange}
-        margin="normal"
-        error={!!errors.website}
-        helperText={errors.website}
-      />
-      <TextField
-        fullWidth
-        label="Twitter"
-        name="twitter"
-        value={formData?.twitter || ''}
-        onChange={handleChange}
-        margin="normal"
-        error={!!errors.twitter}
-        helperText={errors.twitter}
-      />
-      <TextField
-        fullWidth
-        label="Instagram"
-        name="instagram"
-        value={formData?.instagram || ''}
-        onChange={handleChange}
-        margin="normal"
-        error={!!errors.instagram}
-        helperText={errors.instagram}
-      />
-      <TextField
-        fullWidth
-        label="Facebook"
-        name="facebook"
-        value={formData?.facebook || ''}
-        onChange={handleChange}
-        margin="normal"
-        error={!!errors.facebook}
-        helperText={errors.facebook}
-      />
-      <Box sx={{ mt: 2 }}>
-        <Button type="submit" variant="contained">
+    <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+      <div>
+        <label htmlFor="bio" className="block text-gray-700 font-semibold mb-1">Bio</label>
+        <textarea
+          id="bio"
+          name="bio"
+          value={formData?.bio || ''}
+          onChange={handleChange}
+          rows={4}
+          className="w-full border rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+      </div>
+      <div>
+        <label htmlFor="website" className="block text-gray-700 font-semibold mb-1">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          value={formData?.website || ''}
+          onChange={handleChange}
+          className={`w-full border rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.website ? 'border-red-500' : ''}`}
+        />
+        {errors.website && <p className="text-red-500 text-xs mt-1">{errors.website}</p>}
+      </div>
+      <div>
+        <label htmlFor="twitter" className="block text-gray-700 font-semibold mb-1">Twitter</label>
+        <input
+          id="twitter"
+          name="twitter"
+          type="text"
+          value={formData?.twitter || ''}
+          onChange={handleChange}
+          className={`w-full border rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.twitter ? 'border-red-500' : ''}`}
+        />
+        {errors.twitter && <p className="text-red-500 text-xs mt-1">{errors.twitter}</p>}
+      </div>
+      <div>
+        <label htmlFor="instagram" className="block text-gray-700 font-semibold mb-1">Instagram</label>
+        <input
+          id="instagram"
+          name="instagram"
+          type="text"
+          value={formData?.instagram || ''}
+          onChange={handleChange}
+          className={`w-full border rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.instagram ? 'border-red-500' : ''}`}
+        />
+        {errors.instagram && <p className="text-red-500 text-xs mt-1">{errors.instagram}</p>}
+      </div>
+      <div>
+        <label htmlFor="facebook" className="block text-gray-700 font-semibold mb-1">Facebook</label>
+        <input
+          id="facebook"
+          name="facebook"
+          type="text"
+          value={formData?.facebook || ''}
+          onChange={handleChange}
+          className={`w-full border rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400 ${errors.facebook ? 'border-red-500' : ''}`}
+        />
+        {errors.facebook && <p className="text-red-500 text-xs mt-1">{errors.facebook}</p>}
+      </div>
+      <div className="pt-2">
+        <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold transition">
           Save Changes
-        </Button>
-      </Box>
-    </Box>
+        </button>
+      </div>
+    </form>
   );
 };
 

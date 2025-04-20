@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button, CircularProgress } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { FaCloudUploadAlt } from 'react-icons/fa';
+import { ImSpinner2 } from 'react-icons/im';
 
 const ProfilePictureUpload = ({ onUpload }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -28,15 +28,18 @@ const ProfilePictureUpload = ({ onUpload }) => {
         type="file"
         onChange={handleFileChange}
       />
-      <label htmlFor="profile-picture-upload">
-        <Button
-          variant="contained"
-          component="span"
-          startIcon={isUploading ? <CircularProgress size={20} /> : <CloudUploadIcon />}
-          disabled={isUploading}
-        >
-          {isUploading ? 'Uploading...' : 'Upload Profile Picture'}
-        </Button>
+      <label
+        htmlFor="profile-picture-upload"
+        className={`flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition ${isUploading ? 'opacity-70 cursor-not-allowed' : ''} cursor-pointer`}
+        tabIndex={0}
+        aria-disabled={isUploading}
+      >
+        {isUploading ? (
+          <ImSpinner2 className="animate-spin" size={20} />
+        ) : (
+          <FaCloudUploadAlt size={20} />
+        )}
+        {isUploading ? 'Uploading...' : 'Upload Profile Picture'}
       </label>
     </div>
   );
