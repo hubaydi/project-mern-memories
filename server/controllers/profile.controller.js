@@ -4,7 +4,7 @@ import User from '../models/user.model.js';
 import { SUCCESS, FAIL } from '../utils/constants.js';
 import appError from '../utils/appError.js';
 
-export const getProfile = async (req, res) => {
+export const getProfile = async (req, res, next) => {
   const { id } = req.params;
 
   try {
@@ -26,7 +26,7 @@ export const getProfile = async (req, res) => {
   }
 };
 
-export const updateProfile = async (req, res) => {
+export const updateProfile = async (req, res, next) => {
   const { id } = req.params;
   const { bio, website, twitter, instagram, facebook } = req.body;
   // const profilePic = req.file ? req.file.path : null;
@@ -49,7 +49,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-export const uploadProfilePicture = async (req, res) => {
+export const uploadProfilePicture = async (req, res, next) => {
   const { id } = req.params;
   const { file } = req;
 

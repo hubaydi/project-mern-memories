@@ -13,8 +13,8 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const logout = useCallback(() => {
-    dispatch(logoutAction());
+  const logout = useCallback(async () => {
+    await dispatch(logoutAction());
     navigate('/auth');
   }, [dispatch, navigate]);
 

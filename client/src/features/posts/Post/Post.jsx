@@ -3,10 +3,8 @@ import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import ThumbUpAltOutlined from '@mui/icons-material/ThumbUpAltOutlined';
+import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
+import { MdDelete, MdMoreHoriz } from 'react-icons/md';
 
 import { likePost, deletePost } from '../PostsSlice';
 
@@ -58,14 +56,12 @@ const Post = ({ postId, setCurrentId }) => {
       return likes.find((like) => like === userId)
         ? (
           <>
-            <ThumbUpAltIcon fontSize="small" />
-            &nbsp;
+            <AiFillLike size={18} className="inline mr-1" />
             {likes.length > 2 ? `You and ${likes.length - 1} others` : `${likes.length} like${likes.length > 1 ? 's' : ''}`}
           </>
         ) : (
           <>
-            <ThumbUpAltOutlined fontSize="small" />
-            &nbsp;
+            <AiOutlineLike size={18} className="inline mr-1" />
             {likes.length} {likes.length === 1 ? 'Like' : 'Likes'}
           </>
         );
@@ -73,8 +69,7 @@ const Post = ({ postId, setCurrentId }) => {
 
     return (
       <>
-        <ThumbUpAltOutlined fontSize="small" />
-        &nbsp;Like
+        <AiOutlineLike size={18} className="inline mr-1" />Like
       </>
     );
   };
@@ -112,7 +107,7 @@ const Post = ({ postId, setCurrentId }) => {
               }}
               className="text-gray-500 hover:text-gray-400 focus:outline-none"
             >
-              <MoreHorizIcon fontSize="medium" />
+              <MdMoreHoriz size={22} />
             </button>
           </div>
         )}
@@ -123,7 +118,7 @@ const Post = ({ postId, setCurrentId }) => {
           </p>
         </div>
       </div>
-      <div className="px-2 mt-4 mb-2">
+      <div className="px-2 mt-4 mb-2 flex items-center">
         <button
           type="button"
           className="inline-block bg-[#f0911d21] rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer"
@@ -135,11 +130,11 @@ const Post = ({ postId, setCurrentId }) => {
         {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
           <button
             type="button"
-            className="inline-block bg-[#f0911d21] rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer"
+            className=" bg-[#f0911d21] rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2 cursor-pointer inline-flex items-center"
             onClick={() => dispatch(deletePost(post._id))}
           >
-            <DeleteIcon fontSize="small" />
-            &nbsp; Delete
+            <MdDelete size={16} />
+            Delete
           </button>
         )}
       </div>

@@ -1,6 +1,5 @@
 import React from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 const Input = ({ name, handleChange, label, autoFocus, type, handleShowPassword, placeholder, error }) => (
   <div className="w-full space-y-2 mb-1">
@@ -22,7 +21,7 @@ const Input = ({ name, handleChange, label, autoFocus, type, handleShowPassword,
           className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
           onClick={handleShowPassword}
         >
-          {type === 'password' ? <VisibilityIcon /> : <VisibilityOffIcon />}
+          {type === 'password' ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
         </button>
       )}
     </div>

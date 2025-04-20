@@ -11,7 +11,7 @@ import appError from '../utils/appError.js';
 const SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '3d';
 
-export const signin = async (req, res) => {
+export const signin = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
@@ -43,7 +43,7 @@ export const signin = async (req, res) => {
   }
 };
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
 
   try {

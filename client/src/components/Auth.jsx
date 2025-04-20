@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { AiOutlineLock } from 'react-icons/ai';
 import { jwtDecode } from 'jwt-decode';
 
 import Icon from './icon';
-import { signIn, signUp, selectUserStatus, selectUserError } from '../features/users/UsersSlice';
+import { signIn, signUp, selectUserStatus, selectUserError } from '../features/users/usersSlice';
 import { AUTH } from '../constants/actionTypes';
 import Input from './Input';
 
@@ -39,36 +39,32 @@ const SignUp = () => {
     const newErrors = {};
     
     // Email validation
-    if (!form.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = 'Email address is invalid';
+    if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = 'Invalid email address';
     }
-    
     // Password validation
-    if (!form.password) {
-      newErrors.password = 'Password is required';
-    } else if (form.password.length < 6) {
+    if (!form.password || form.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-    
-    // Signup specific validations
-    if (isSignup) {
-      if (!form.firstName) {
-        newErrors.firstName = 'First name is required';
-      }
-      
-      if (!form.lastName) {
-        newErrors.lastName = 'Last name is required';
-      }
-      
-      if (form.confirmPassword !== form.password) {
-        newErrors.confirmPassword = 'Passwords do not match';
-      }
+    if (isSignup && form.password !== form.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
     }
-    
+    if (isSignup && (!form.firstName || !form.lastName)) {
+      newErrors.firstName = 'First name is required';
+      newErrors.lastName = 'Last name is required';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    if (errors[e.target.name]) {
+      setErrors({
+        ...errors,
+        [e.target.name]: ''
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -77,24 +73,24 @@ const SignUp = () => {
     if (!validateForm()) return;
 
     if (isSignup) {
-      dispatch(signUp(form))
+      await dispatch(signUp(form))
         .unwrap()
         .then(() => {
           navigate('/');
         })
         .catch((error) => {
           console.error("Sign-up failed:", error);
-          setFormError('Sign-up failed. Please try again.');
+          setFormError(error.message);
         });
     } else {
-      dispatch(signIn(form))
+      await dispatch(signIn(form))
         .unwrap()
         .then(() => {
           navigate('/');
         })
         .catch((error) => {
           console.error("Sign-in failed:", error);
-          setFormError('Sign-in failed. Please try again.');
+          setFormError(error.message);
         });
     }
   };
@@ -123,102 +119,80 @@ const SignUp = () => {
     setFormError('Google Sign In failed. Please try again.');
   };
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    if (errors[e.target.name]) {
-      setErrors({
-        ...errors,
-        [e.target.name]: ''
-      });
-    }
-  };
-
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-full max-w-xs">
-        <div className="bg-white shadow-lg rounded-md px-8 pt-6 pb-2 mb-4">
-          <div className="flex justify-center">
-            <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mb-2">
-              <LockOutlinedIcon />
-            </div>
-          </div>
-          <h1 className="text-blue-500 text-center text-lg font-semibold mb-4">{ isSignup ? 'Sign up' : 'Sign in' }</h1>
-          
-          {formError && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
-              {formError}
-            </div>
-          )}
-          
-          <form className="mb-4" onSubmit={handleSubmit}>
-            <div className="grid gap-2">
-              { isSignup && (
-                <div className="flex gap-2">
-                  <Input 
-                    name="firstName" 
-                    label="First name" 
-                    placeholder="John" 
-                    handleChange={handleChange} 
-                    autoFocus
-                    error={errors.firstName}
-                  />
-                  <Input 
-                    name="lastName" 
-                    label="Last name" 
-                    placeholder="Doe" 
-                    handleChange={handleChange}
-                    error={errors.lastName}
-                  />
-                </div>
-              )}
-              <Input 
-                name="email" 
-                label="Email Address" 
-                placeholder="john.doe@example.com" 
-                handleChange={handleChange} 
-                type="email" 
-                error={errors.email}
-              />
-              <Input 
-                name="password" 
-                label="Password" 
-                placeholder="********" 
-                handleChange={handleChange} 
-                type={showPassword ? 'text' : 'password'} 
-                handleShowPassword={handleShowPassword} 
-                error={errors.password}
-              />
-              { isSignup && 
-                <Input 
-                  name="confirmPassword" 
-                  label="Repeat Password" 
-                  placeholder="********" 
-                  handleChange={handleChange} 
-                  type="password" 
-                  error={errors.confirmPassword}
-                /> 
-              }
-            </div>
-            <button 
-              className={`bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mt-4 cursor-pointer ${userStatus === 'loading' ? 'opacity-50 cursor-not-allowed' : ''}`} 
-              type="submit"
-              disabled={userStatus === 'loading'}
-            >
-              { userStatus === 'loading' ? 'Processing...' : (isSignup ? 'Sign Up' : 'Sign In') }
-            </button>
-            <div className="flex justify-center mt-4">
-              <button 
-                type="button"
-                className="text-sm text-gray-500 hover:text-blue-500" 
-                onClick={switchMode}
-                disabled={userStatus === 'loading'}
-              >
-                { isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up" }
-              </button>
-            </div>
-          </form>
+    <div className="max-w-md mx-auto bg-white p-8 rounded shadow">
+      <div className="flex flex-col items-center mb-4">
+        <div className="bg-blue-500 rounded-full p-3 mb-2">
+          <AiOutlineLock className="text-white text-2xl" />
         </div>
+        <h2 className="text-xl font-bold mb-2">{isSignup ? 'Sign Up' : 'Sign In'}</h2>
       </div>
+      {formError && <p className="text-red-500 text-xs italic mt-2">{formError}</p>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {isSignup && (
+          <div className="flex gap-2">
+            <Input
+              name="firstName"
+              label="First name"
+              placeholder="John"
+              handleChange={handleChange}
+              autoFocus
+              error={errors.firstName}
+            />
+            <Input 
+              name="lastName" 
+              label="Last name" 
+              placeholder="Doe" 
+              handleChange={handleChange}
+              error={errors.lastName}
+            />
+          </div>
+        )}
+        <Input 
+          name="email" 
+          label="Email Address" 
+          placeholder="john.doe@example.com" 
+          handleChange={handleChange} 
+          type="email" 
+          error={errors.email}
+        />
+        <Input
+          name="password"
+          label="Password"
+          placeholder="********" 
+          handleChange={handleChange}
+          type={showPassword ? 'text' : 'password'}
+          handleShowPassword={handleShowPassword}
+          error={errors.password}
+        />
+        {isSignup && (
+          <Input
+            name="confirmPassword"
+            label="Repeat Password"
+            placeholder="********"
+            handleChange={handleChange}
+            type={showPassword ? 'text' : 'password'}
+            error={errors.confirmPassword}
+          />
+        )}
+        <button
+          type="submit"
+          className={`bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mt-4 cursor-pointer ${userStatus === 'loading' ? 'opacity-50 cursor-not-allowed' : ''}`} 
+          disabled={userStatus === 'loading'}
+        >
+          { userStatus === 'loading' ? 'Processing...' : (isSignup ? 'Sign Up' : 'Sign In') }
+        </button>
+        <div className="flex justify-center mt-4">
+          <button
+            type="button"
+            className="text-sm text-gray-500 hover:text-blue-500"
+            onClick={switchMode}
+            disabled={userStatus === 'loading'}
+          >
+            { isSignup ? 'Already have an account? Sign In' : "Don't have an account? Sign Up" }
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
