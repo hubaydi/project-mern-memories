@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getPost, getPostsBySearch, selectAllPosts, selectPostById } from './PostsSlice';
+import { getPostsBySearch, selectAllPosts } from './postsSlice';
 import CommentSection from '../../components/CommentSection';
 
 const Post = () => {
@@ -16,17 +16,17 @@ const Post = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(getPost(id));
       if (post?.tags?.length > 0) {
         const tags = post.tags.join(',');
-        dispatch(getPostsBySearch({ search: 'none', tags }))
-          .catch((error) => {
-            console.error('Error fetching recommended posts:', error);
-          });
+        try {
+          await dispatch(getPostsBySearch({ search: 'none', tags }))
+        } catch (error) {
+          console.error('Error fetching recommended posts:', error);
+        }
       }
     };
     fetchData();
-  }, [id]);
+  }, [post?.tags]);
 
   const recommendedPosts = useMemo(() => {
     return posts.filter(({ _id }) => _id !== post?._id);

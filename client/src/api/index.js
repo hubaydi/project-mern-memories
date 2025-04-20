@@ -46,10 +46,10 @@ API.interceptors.request.use((req) => {
 export const fetchPosts = (page) => API.get(`/posts?page=${page}`);
 export const fetchPost = (id) => API.get(`/posts/${id}`);
 export const createPost = (newPost) => API.post('/posts', newPost, {
-  headers: {
-    'Content-Type': 'multipart/form-data'
-  }
-});
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost, {
   headers: {
     'Content-Type': 'multipart/form-data'
@@ -61,7 +61,7 @@ export const likePost = (id) => API.patch(`/posts/${id}/like-post`);
 export const commentPost = (comment, postId) => API.post(`/posts/${postId}/comment-post`, { value: comment });
 
 export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
-export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);
+export const fetchPostsBySearch = ({ search, tags }) => API.get(`/posts/search?searchQuery=${search || 'none'}&tags=${tags || 'none'}`);
 
 export const signIn = (formData) => API.post('/users/sign-in', formData);
 export const signUp = (formData) => API.post('/users/sign-up', formData);

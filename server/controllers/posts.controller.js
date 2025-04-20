@@ -5,7 +5,7 @@ import PostModel from '../models/post.model.js';
 import { SUCCESS, FAIL } from '../utils/constants.js';
 import appError from '../utils/appError.js';
 
-export const getPosts = async (req, res) => {
+export const getPosts = async (req, res, next) => {
   const { page } = req.query;
   
   try {
@@ -21,7 +21,8 @@ export const getPosts = async (req, res) => {
   }
 };
 
-export const getPostsBySearch = async (req, res) => {
+export const getPostsBySearch = async (req, res, next) => {
+  console.log("from getPostsBySearch", req.query);
   const { searchQuery, tags } = req.query;
 
   if (!searchQuery && !tags) {
@@ -37,11 +38,11 @@ export const getPostsBySearch = async (req, res) => {
 
     res.status(200).json({ status: SUCCESS, data: { posts } });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to search posts. Please try again with different search terms.' });
+    res.status(500).json({ status: FAIL, message: 'Failed to search posts. Please try again with different search terms.', error: error.message });
   }
 };
 
-export const getPostsByCreator = async (req, res) => {
+export const getPostsByCreator = async (req, res, next) => {
   const { name } = req.query;
 
   try {
@@ -53,7 +54,7 @@ export const getPostsByCreator = async (req, res) => {
   }
 };
 
-export const getPost = async (req, res) => {
+export const getPost = async (req, res, next) => {
   const { id } = req.params;
 
   try {
@@ -71,11 +72,11 @@ export const getPost = async (req, res) => {
     
     res.status(200).json({ status: SUCCESS, data: { post } });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch the post. Please try again later.' });
+    res.status(500).json({status: FAIL, message: 'Failed to fetch the post. Please try again later.', error: error.message });
   }
 };
 
-export const createPost = async (req, res) => {
+export const createPost = async (req, res, next) => {
 
   const post = req.body;
 
@@ -96,7 +97,7 @@ export const createPost = async (req, res) => {
   }
 };
 
-export const updatePost = async (req, res) => {
+export const updatePost = async (req, res, next) => {
   const { id } = req.params;
   const updatedPpost = req.body;
 
@@ -119,7 +120,7 @@ export const updatePost = async (req, res) => {
   }
 };
 
-export const deletePost = async (req, res) => {
+export const deletePost = async (req, res, next) => {
   const { id } = req.params;
 
   try {
@@ -142,7 +143,7 @@ export const deletePost = async (req, res) => {
   }
 };
 
-export const likePost = async (req, res) => {
+export const likePost = async (req, res, next) => {
   const { id } = req.params;
 
   try {
@@ -175,9 +176,8 @@ export const likePost = async (req, res) => {
   }
 };
 
-export const commentPost = async (req, res) => {
+export const commentPost = async (req, res, next) => {
   const { id } = req.params;
-  console.log("from comment post controller", id);
   const { value } = req.body;
 
   try {

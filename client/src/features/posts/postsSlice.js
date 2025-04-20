@@ -40,15 +40,15 @@ export const updatePost = createAsyncThunk(
 export const deletePost = createAsyncThunk(
   'posts/deletePost',
   async (postId) => {
-    await api.deletePost(postId)
-    return postId
+    const response = await api.deletePost(postId)
+    return response.data
   }
 )
 
 export const getPostsBySearch = createAsyncThunk(
   'posts/getPostsBySearch',
-  async (searchQuery) => {
-    const response = await api.fetchPostsBySearch(searchQuery)
+  async ({ search, tags }) => {
+    const response = await api.fetchPostsBySearch({ search, tags })
     return response.data
   }
 )
@@ -111,8 +111,8 @@ const postsSlice = createSlice({
       )
       .addCase(addNewPost.fulfilled, (state, action) => {
         state.status = 'succeeded'
-          state.posts.push(action.payload.data.post)
-        }
+        state.posts.unshift(action.payload.data.post)
+      }
       )
       .addCase(addNewPost.rejected, (state, action) => {
           state.status = 'failed'
@@ -129,14 +129,14 @@ const postsSlice = createSlice({
         }
       )
       .addCase(deletePost.fulfilled, (state, action) => {
-          if (!action.payload?.data._id) {
+          if (!action.payload?.data.id) {
             console.log('Delete could not complete')
             console.log(action.payload)
             state.status = 'failed'
             return;
         }
           state.status = 'succeeded'
-          state.posts = state.posts.filter(post => post._id !== action.payload.data._id)
+          state.posts = state.posts.filter(post => post._id !== action.payload.data.id)
         }
     )
       

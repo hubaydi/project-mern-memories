@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { addNewPost, updatePost } from '../features/posts/PostsSlice';
+import { addNewPost, updatePost } from '../features/posts/postsSlice';
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({ title: '', message: '', tags: [] });
@@ -65,7 +65,7 @@ const Form = ({ currentId, setCurrentId }) => {
       const formData = new FormData();
       formData.append('title', postData.title);
       formData.append('message', postData.message);
-      formData.append('tags', JSON.stringify(postData.tags));
+      postData.tags.forEach(tag => formData.append('tags', tag));
       formData.append('selectedFile', selectedFile);
       formData.append('name', user?.result?.name || '');
       

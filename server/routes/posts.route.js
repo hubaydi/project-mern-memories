@@ -45,6 +45,9 @@ router.route('/')
   .get(getPosts)
   .post(auth, upload.single('selectedFile'), createPost);
 
+router.get('/creator', getPostsByCreator);
+router.get('/search', getPostsBySearch);
+  
 router.route('/:id')
   .get(getPost)
   .patch(auth, upload.single('selectedFile'), updatePost)
@@ -52,8 +55,5 @@ router.route('/:id')
   
 router.patch('/:id/like-post', auth, likePost);
 router.post('/:id/comment-post', auth, commentPost);
-  
-router.get('/creator', getPostsByCreator);
-router.get('/search', getPostsBySearch);
 
 export default router;
